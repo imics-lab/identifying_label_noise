@@ -1,7 +1,7 @@
 # Function to create model, required for KerasClassifier
-from keras import Sequential
-from keras.layers import Dense, Dropout
-from keras.optimizers import SGD
+from tensorflow.keras import Sequential
+from tensorflow.keras.layers import Dense, Dropout
+from tensorflow.keras.optimizers import SGD
 
 
 def get_model_dense(input_dim, output_dim, num_hidden, size_hidden, learn_rate, activation='relu', dropout=0):

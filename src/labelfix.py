@@ -11,10 +11,13 @@ from urllib.request import urlopen
 import gensim
 import numpy as np
 import pandas as pd
-from keras.callbacks import EarlyStopping
-from keras.utils import to_categorical
-from keras.wrappers.scikit_learn import KerasClassifier
-from keras_preprocessing.image import ImageDataGenerator
+
+import tensorflow as tf
+import tensorflow.keras as keras
+from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.wrappers.scikit_learn import KerasClassifier
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from sklearn.decomposition import TruncatedSVD
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.metrics import f1_score, make_scorer
@@ -24,8 +27,10 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.utils import compute_class_weight
 from tensorflow.python.client import device_lib
 
-from src.models.cnn_keras import get_model_cnn
-from src.models.dense_net_keras import get_model_dense
+#from src.models.cnn_keras import get_model_cnn
+#from src.models.dense_net_keras import get_model_dense
+from models import cnn_keras
+from models import dense_net_keras
 
 warnings.filterwarnings("ignore", message="F-score is ill-defined and being set to 0.0 in labels with no predicted samples.")
 warnings.filterwarnings("ignore", message="Data with input dtype int64 was converted to float64 by MinMaxScaler.")

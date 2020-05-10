@@ -1,7 +1,7 @@
 # Function to create model, required for KerasClassifier
-from keras import Sequential
-from keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten
-from keras.optimizers import SGD
+from tensorflow.keras import Sequential
+from tensorflow.keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten
+from tensorflow.keras.optimizers import SGD
 
 
 def get_model_cnn(shape_x, shape_y):
