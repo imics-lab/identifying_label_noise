@@ -11,6 +11,8 @@ def get_model_cnn(shape_x, shape_y):
     :param shape_y:         tuple of ints, Shape of the label
     :return:                Keras model, The compiled model ready for training
     """
+    print("buidling cnn")
+
     model = Sequential()
     model.add(Conv2D(48, (2, 2), padding='same', input_shape=shape_x, activation="relu"))
     model.add(Conv2D(48, (2, 2), activation="relu"))

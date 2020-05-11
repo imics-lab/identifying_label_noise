@@ -29,8 +29,8 @@ from tensorflow.python.client import device_lib
 
 #from src.models.cnn_keras import get_model_cnn
 #from src.models.dense_net_keras import get_model_dense
-from models import cnn_keras
-from models import dense_net_keras
+from models import cnn_keras  as ck
+from models import dense_net_keras as dnk
 
 warnings.filterwarnings("ignore", message="F-score is ill-defined and being set to 0.0 in labels with no predicted samples.")
 warnings.filterwarnings("ignore", message="Data with input dtype int64 was converted to float64 by MinMaxScaler.")
@@ -292,7 +292,7 @@ def check_dataset(X, y, hyperparams=None):
                 "activation": ["relu"]
             }
 
-            estimator = KerasClassifier(build_fn=get_model_dense)
+            estimator = KerasClassifier(build_fn=dnk.get_model_dense)
 
             num_cpus = int(multiprocessing.cpu_count() * 0.6)
             grid_search_transfer = GridSearchCV(
@@ -320,7 +320,7 @@ def check_dataset(X, y, hyperparams=None):
         bp = copy.deepcopy(best_params)
         del bp["epochs"]
 
-        nn = get_model_dense(**bp)
+        nn = dnk.get_model_dense(**bp)
         nn.fit(X, y, epochs=best_params["epochs"], verbose=0, callbacks=[es], class_weight=class_weight,
                 validation_split=val_split_size if do_val_split else None)
         pred = nn.predict_proba(X)  # predict test set
@@ -340,7 +340,7 @@ def check_dataset(X, y, hyperparams=None):
         val_split_size = 0.05
         best_params = {"Fixed sized CNN"}
 
-        nn = get_model_cnn(shape_x=X.shape[1:], shape_y=y.shape[1:][0])
+        nn = ck.get_model_cnn(shape_x=X.shape[1:], shape_y=y.shape[1:][0])
         nn.summary()
         datagen = ImageDataGenerator(featurewise_center=True, featurewise_std_normalization=True, zca_whitening=False)
         datagen.fit(X)
