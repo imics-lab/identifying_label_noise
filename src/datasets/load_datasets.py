@@ -11,17 +11,18 @@ import os
 import pandas as pd
 import random
 
+import tensorflow as tf
 from scipy.io import arff
-from keras.datasets import cifar100, cifar10, imdb
-from keras_preprocessing.text import Tokenizer
+from tensorflow.keras.datasets import cifar100, cifar10, imdb
+from tensorflow.keras.preprocessing.text import Tokenizer
 from sklearn.datasets import fetch_20newsgroups, make_blobs, fetch_covtype
 from sklearn.datasets import make_classification
 from sklearn.decomposition import PCA
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
-import tensorflow as tf
 
-from src.labelfix import preprocess_x_y_and_shuffle
+
+from labelfix import *
 
 
 def maybe_download_dataset(file_name, url, url_file_name, extract_file=None):

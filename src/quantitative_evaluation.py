@@ -4,9 +4,9 @@ import datetime
 from sklearn.datasets import load_wine, load_breast_cancer, load_iris, load_digits
 from tabulate import tabulate
 
-from src.datasets.cifar100_classes import cifar_cls
-from src.labelfix import check_dataset, _calc_recall, _precision_on_k
-from src.datasets.load_datasets import *
+from datasets.cifar100_classes import cifar_cls
+from labelfix import check_dataset, _calc_recall, _precision_on_k
+from datasets.load_datasets import *
 
 
 # ================================== SETTINGS =====================================

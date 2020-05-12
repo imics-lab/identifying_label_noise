@@ -112,11 +112,21 @@ def is_numerical(X):
     :param X:       np array, Data set to check
     :return:        bool, True if data is probably numerical, False otherwise
     """
-    is_num = X.ndim == 2
+    is_num = X.ndim == 2 and len(X[0]) <= 200
     if is_num:
         print("Assuming numerical input since data has dimensionality {}.".format(X.ndim))
     return is_num
 
+def is_timeSeries(X):
+    """
+    Check if the data is most likely to be time series. Check is based on dimensionality and length of each vector.
+    :param X:       np array, Data set to check
+    :return:        bool, True if X is probably time series
+    """
+    is_num = X.ndim == 2 and len(X[0]) > 200
+    if is_num:
+        print("Assuming time series input since data has dimensionality {}.".format(X.ndim))
+    return is_num
 
 def is_textual(X):
     """
