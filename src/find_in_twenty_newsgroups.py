@@ -4,12 +4,15 @@ from utils.view_20_newsgroup import view_twenty
 
 # example on how the system works on textual data
 if __name__ == "__main__":
+    print("working")
     # load the twenty newsgroup data set
     twenty_newsgroup = sklearn.datasets.fetch_20newsgroups(subset="all", shuffle=False)
+    print("data loaded")
 
     # "data" is required to be a list of strings. Each string is the newsgroup article to be classified.
     # "target" is an array of ints representing the labels.
     twenty_newsgroup["data"], twenty_newsgroup["target"] = preprocess_x_y_and_shuffle(twenty_newsgroup["data"], twenty_newsgroup["target"])
+    print("data processed")
     res = check_dataset(twenty_newsgroup["data"], twenty_newsgroup["target"])
 
     # return first 100 questionable indices
