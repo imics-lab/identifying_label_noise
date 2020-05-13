@@ -134,8 +134,8 @@ def is_textual(X):
     :param X:       np array, Data set to check
     :return:        bool, True if data is probably textual, False otherwise
     """
-    unique_types = np.unique([str(type(X[i])) for i in range(X.shape[0])])
     print("checking data for text")
+    unique_types = np.unique([str(type(X[i])) for i in range(X.shape[0])])
     is_txt = (X.ndim == 1 and np.all(["str" in unique_types[i] for i in range(unique_types.shape[0])]))
     if is_txt:
         print("Data is specified to be textual")
@@ -173,6 +173,8 @@ def preprocess_x_y_and_shuffle(X, y):
     # Some sanity checks
     assert y.shape[0] == X.shape[0], "Features and labels have different size"
     assert X.shape[0] >= 30, "Dataset has less than 30 non-NAN values!"
+
+    print("assertions passed")
 
     if is_textual(X):
         print("Applying textual preprocessing on data with shape {}.".format(X.shape))
