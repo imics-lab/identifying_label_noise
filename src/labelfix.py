@@ -239,6 +239,12 @@ def preprocess_x_y_and_shuffle(X, y):
 
         return X, y
 
+    elif is_timeSeries(X):
+        print("Assuming time series data based on dimensionality = 2 and length of X vector")
+        min_max = MinMaxScaler(feature_range=(-1, 1))
+        X = min_max.fit_transform(X)
+        return X, y
+
     else:
         raise ValueError("X has dimensionality of {}! Must be either 2 (numerical)"
                          "or 3 or 4 (image with or without channel information)".format(X.ndim))
