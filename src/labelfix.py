@@ -31,6 +31,7 @@ from tensorflow.python.client import device_lib
 #from src.models.dense_net_keras import get_model_dense
 from models import cnn_keras  as ck
 from models import dense_net_keras as dnk
+from models import cnn_1d_keras as c1k
 
 warnings.filterwarnings("ignore", message="F-score is ill-defined and being set to 0.0 in labels with no predicted samples.")
 warnings.filterwarnings("ignore", message="Data with input dtype int64 was converted to float64 by MinMaxScaler.")
@@ -366,6 +367,33 @@ def check_dataset(X, y, hyperparams=None):
         datagen = ImageDataGenerator(featurewise_center=True, featurewise_std_normalization=True, zca_whitening=False)
         datagen.fit(X)
         X, y = datagen.flow(X, y, batch_size=X.shape[0], shuffle=False).next()
+        nn.fit(X, y, epochs=100, verbose=0, callbacks=[es], class_weight=class_weight, validation_split=val_split_size)
+        pred = nn.predict_proba(X)  # predict test set
+
+    #=========================================== if time series ===================================
+    elif is_timeSeries(X):
+        # Assert incoming data format
+        y = y.squeeze()
+        assert y.ndim == 1, "ONE HOT FOR KERAS! Text or Numeric requires numerical labels!"
+        print("checking time series data")
+
+        # Set up early stopping
+        do_val_split = X.shape[0] > 1000
+        metric = "acc"
+        es = EarlyStopping(monitor="val_" + metric if do_val_split else metric,
+                           min_delta=0.01, patience=5, verbose=0, mode='max', baseline=None,
+                           restore_best_weights=True)
+
+        # Grid Seach Loop
+        val_split_size = 0.05
+        best_params = {"Fixed sized CNN"}
+
+        y = to_categorical(y)
+
+        print ("building model with input size ", X[0].shape[0], " and output size ",  y.shape[1:][0])
+        nn = c1k.get_model_1d_cnn(shape_x=X[0].shape[0], shape_y=y.shape[1:][0])
+        X = np.resize(X, (X.shape[0], X.shape[1]))
+        print('Input samples: ', len(X), " and input targets: ", len(y))
         nn.fit(X, y, epochs=100, verbose=0, callbacks=[es], class_weight=class_weight, validation_split=val_split_size)
         pred = nn.predict_proba(X)  # predict test set
 
