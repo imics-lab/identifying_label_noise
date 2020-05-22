@@ -42,7 +42,7 @@ if __name__ == "__main__":
     res = check_dataset(data, labels)
 
     X_train, X_test, y_train, y_test = train_test_split(data, labels, test_size=0.2, shuffle=False)
-    classifier = svm.LinearSVC()
+    classifier = svm.LinearSVC(verbose=1)
 
     classifier.fit(X_train, y_train)
     y_pred = classifier.predict(X_test)
