@@ -39,4 +39,8 @@ if __name__ == "__main__":
     res = check_dataset(data, labels);
 
     # return first 100 questionable indices
-    print("The first 100 questionable pairs (x_i, y_i) are: {}".format(res["indices"][:100]))
+    #print("The first 100 questionable pairs (x_i, y_i) are: {}".format(res["indices"][:100]))
+    print("Top 10 questionable series: ")
+    for i in res["indices"][:100]:
+        print("-------Index ", i, "---------")
+        print ("Mean: ", np.mean(data[i][:]))
