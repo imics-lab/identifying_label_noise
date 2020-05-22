@@ -1,15 +1,18 @@
 #Author: Gentry Atkinson
 #Organization: Texas University
-#Data: 13 May, 2020
+#Data: 22 May, 2020
 #This code will generate a numpy array of synthetic time series data, use the
-#labelfix preprocessor to flip mu percent (0.03) of the labels, and then use the
-#labelfix check_dataset function to identify some of the flipped labelsself.
+#labelfix preprocessor to flip mu percent (0.03) of the labels, and then test an
+#SVM trained with and without cleaned datagen
 
 import sklearn
+from sklearn.model_selection import train_test_split
+from sklearn import svm
 from labelfix import check_dataset, preprocess_x_y_and_shuffle
 from utils.gen_ts_data import generate_pattern_data
 import numpy as np
 import random
+from tensorflow.keras.utils import to_categorical
 
 if __name__ == "__main__":
     print("creating 500 time series sequences with 3 labels")
@@ -38,12 +41,27 @@ if __name__ == "__main__":
 
     res = check_dataset(data, labels)
 
-    # return first 100 questionable indices
-    #print("The first 100 questionable pairs (x_i, y_i) are: {}".format(res["indices"][:100]))
-    print("Top 10 questionable series: ")
+    X_train, X_test, y_train, y_test = train_test_split(data, labels, test_size=0.2, shuffle=False)
+    classifier = svm.LinearSVC()
+
+    classifier.fit(X_train, y_train)
+    y_pred = classifier.predict(X_test)
+    prec = sklearn.metrics.precision_score(y_test, y_pred, average='macro')
+    print("Precision of uncleaned model: ", prec)
+
+    print("Removing top 2%")
+    counter = 0
     for i in res["indices"][:10]:
-        print("\n-------Index ", i, "---------")
-        print("Mean: ", np.mean(data[i][:]))
-        print("Max: ", np.amax(data[i][:]))
-        print("Max: ", np.amin(data[i][:]))
-        print("Label: ", labels[i])
+        data = np.delete(data, i-counter, 0)
+        labels = np.delete(labels, i-counter)
+        counter += 1
+
+    print("Number of samples removed: ", counter)
+    print("New length of data: ", len(data))
+    print("New length of labels: ", len(labels))
+
+    X_train, X_test, y_train, y_test = train_test_split(data, labels, test_size=0.2, shuffle=False)
+    classifier.fit(X_train, y_train)
+    y_pred = classifier.predict(X_test)
+    prec = sklearn.metrics.precision_score(y_test, y_pred, average='macro')
+    print("Precision of cleaned model: ", prec)
