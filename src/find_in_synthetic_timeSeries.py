@@ -41,6 +41,9 @@ if __name__ == "__main__":
     # return first 100 questionable indices
     #print("The first 100 questionable pairs (x_i, y_i) are: {}".format(res["indices"][:100]))
     print("Top 10 questionable series: ")
-    for i in res["indices"][:100]:
-        print("-------Index ", i, "---------")
-        print ("Mean: ", np.mean(data[i][:]))
+    for i in res["indices"][:10]:
+        print("\n-------Index ", i, "---------")
+        print("Mean: ", np.mean(data[i][:]))
+        print("Max: ", np.amax(data[i][:]))
+        print("Max: ", np.amin(data[i][:]))
+        print("Label: ", labels[i])
