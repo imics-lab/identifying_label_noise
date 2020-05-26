@@ -51,7 +51,10 @@ if __name__ == "__main__":
 
     print("Removing top 2%")
     counter = 0
-    for i in res["indices"][:10]:
+    index_list = np.array(res["indices"][:10])
+    index_list = np.sort(index_list)
+    print(index_list)
+    for i in range(len(index_list)):
         data = np.delete(data, i-counter, 0)
         labels = np.delete(labels, i-counter)
         counter += 1
