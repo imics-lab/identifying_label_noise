@@ -166,16 +166,12 @@ def preprocess_x_y_and_shuffle(X, y):
     :return:        (np array, np array), Tuple of preprocessed input data X and labels y
     """
     # squeeze y
-    print("preprocesser called on data with size ", len(X), " and labels with size", len(y))
     y = np.asarray(y).squeeze()
     X = np.asarray(X)
-    print("np array loaded")
 
     # Some sanity checks
     assert y.shape[0] == X.shape[0], "Features and labels have different size"
     assert X.shape[0] >= 30, "Dataset has less than 30 non-NAN values!"
-
-    print("assertions passed")
 
     if is_textual(X):
         print("Applying textual preprocessing on data with shape {}.".format(X.shape))

@@ -77,5 +77,5 @@ def generate_pattern_data_as_dataframe(length=100, numSamples=10, numClasses=3):
 
     samples = {'id':id, 'time':time, 'x':data}
     df = pd.DataFrame(samples, columns=['id', 'time', 'x'])
-    print("I mande a dataframe:\n", df)
+    #print("I made a dataframe:\n", df)
     return df, labels
