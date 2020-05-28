@@ -7,7 +7,7 @@
 
 import sklearn
 from labelfix import check_dataset, preprocess_x_y_and_shuffle
-from utils.gen_ts_data import generate_pattern_data
+from utils.gen_ts_data import generate_pattern_data_as_array
 import numpy as np
 import random
 
@@ -21,17 +21,19 @@ if __name__ == "__main__":
     var_amplitude = [1, 2, 3]
 
     data = np.zeros((NUM_SAMPLES, LENGTH))
-    #labels = np.zeros((NUM_SAMPLES, 3))
+    labels = np.zeros((NUM_SAMPLES, 3))
     labels = np.zeros(NUM_SAMPLES)
 
-    #generate synthetic data and one hot labels
+    generate synthetic data and one hot labels
     for i in range(NUM_SAMPLES):
         label = random.randint(0, 2);
-        data[i,:]=generate_pattern_data(length=LENGTH, avg_pattern_length=pattern_length[label],
+        data[i,:]=generate_pattern_data_as_array(length=LENGTH, avg_pattern_length=pattern_length[label],
             avg_amplitude=amplitude[label], variance_pattern_length=var_pattern_length[label],
             variance_amplitude=var_amplitude[label]);
-        #labels[i, label]=1
+    #    #labels[i, label]=1
         labels[i] = label
+
+    #data, labels = generate_pattern_data_as_dataframe(length=LENGTH, numSamples=NUM_SAMPLES, numClasses=3)
 
     #pre-process and identify data
     data, labels = preprocess_x_y_and_shuffle(data, labels)
