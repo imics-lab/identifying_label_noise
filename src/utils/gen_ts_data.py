@@ -65,8 +65,8 @@ def generate_pattern_data_as_dataframe(length=100, numSamples=10, numClasses=3):
         label = random.randint(0, numClasses-1);
         labels[i] = label
         for j in range(length):
-            id = i
-            time = j
+            id[i*length + j] = i
+            time[i*length + j] = j
         data[start:start+length] = generate_pattern_data_as_array(
             length=length,
             avg_pattern_length=pattern_length[label],

@@ -38,18 +38,20 @@ def cast_array_to_dataframe(X):
     return df
 
 def cast_dataframe_to_array(X, numSamples):
-    length = len(X)/numSamples
+    length = int(len(X)/numSamples)
+    print("This data frame has ", numSamples, " samples")
+    print("This data frame has ", length, " length")
     array = np.zeros((numSamples, length))
+    data = X['x'].to_numpy()
     for i in range(numSamples):
-        array[i][:] = np.tanspose(X['id'==i])
+        array[i][:] = data[i*length:(i+1)*length]
     print("I made an array from a dataframe:\n", array)
     return array
 
 
 
 def get_best_features(X, y):
-    X_df = cast_array_to_dataframe(X)
-    ext = extract_features(X_df, column_id="id", column_sort="time")
+    ext = extract_features(X, column_id="id", column_sort="time")
     imp = impute(ext)
     sel = select_features(ext, y)
     return sel
@@ -76,15 +78,17 @@ if __name__ == "__main__":
     #    #labels[i, label]=1
     #    labels[i] = label
 
-    data, labels = generate_pattern_data_as_dataframe(length=LENGTH, numSamples=NUM_SAMPLES, numClasses=3)
-    data = get_best_features(data, labels)
+    raw_data, labels = generate_pattern_data_as_dataframe(length=LENGTH, numSamples=NUM_SAMPLES, numClasses=3)
+    data_features = get_best_features(raw_data, labels)
+    raw_data = cast_dataframe_to_array(raw_data, 500)
+    data_features = cast_dataframe_to_array(data_features, 500)
 
     #pre-process and identify data
-    data, labels = preprocess_x_y_and_shuffle(data, labels)
+    raw_data, labels = preprocess_x_y_and_shuffle(raw_data, labels)
 
-    res = check_dataset(data, labels)
+    res = check_dataset(raw_data, labels)
 
-    X_train, X_test, y_train, y_test = train_test_split(data, labels, test_size=0.2, shuffle=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_features, labels, test_size=0.2, shuffle=False)
     classifier = svm.LinearSVC(verbose=1)
 
     classifier.fit(X_train, y_train)
@@ -98,7 +102,7 @@ if __name__ == "__main__":
     index_list = np.sort(index_list)
     print(index_list)
     for i in range(len(index_list)):
-        data = np.delete(data, i-counter, 0)
+        data_features = np.delete(data, i-counter, 0)
         labels = np.delete(labels, i-counter)
         counter += 1
 
@@ -106,7 +110,7 @@ if __name__ == "__main__":
     print("New length of data: ", len(data))
     print("New length of labels: ", len(labels))
 
-    X_train, X_test, y_train, y_test = train_test_split(data, labels, test_size=0.2, shuffle=False)
+    X_train, X_test, y_train, y_test = train_test_split(data_features, labels, test_size=0.2, shuffle=False)
     classifier.fit(X_train, y_train)
     y_pred = classifier.predict(X_test)
     prec = sklearn.metrics.precision_score(y_test, y_pred, average='macro')
