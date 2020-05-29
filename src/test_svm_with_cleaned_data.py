@@ -51,20 +51,22 @@ def get_best_features(X, y):
     ext = extract_features(X, column_id="id", column_sort="time")
     imp = impute(ext)
     sel = select_features(ext, y)
-    print("Features selected from data")
-    print(sel)
+    #print("Features selected from data")
+    #print(sel)
     return sel
 
 if __name__ == "__main__":
     print("creating 500 time series sequences with 3 labels over 5 test runs")
     NUM_SAMPLES = 500
     LENGTH = 500
+    NUM_OF_RUNS = 3
 
-    raw_precision = np.zeros((5))
-    cleaned_precision = np.zeros((5))
+    raw_precision = np.zeros((NUM_OF_RUNS))
+    cleaned_precision = np.zeros((NUM_OF_RUNS))
     classifier = svm.LinearSVC(verbose=0)
 
-    for iter_num in range(5):
+    for iter_num in range(NUM_OF_RUNS):
+        print("--------------Run Number: ", iter_num+1, "--------------------")
         #generate data in 3 classes
         raw_data, labels = generate_pattern_data_as_dataframe(length=LENGTH, numSamples=NUM_SAMPLES, numClasses=3)
 
@@ -72,10 +74,11 @@ if __name__ == "__main__":
         data_features = get_best_features(raw_data, labels)
         raw_data = cast_dataframe_to_array(raw_data, 500)
         data_features = data_features.to_numpy()
+        #print(data_features)
 
         #pre-process and identify data
         raw_data, labels = preprocess_x_y_and_shuffle(raw_data, labels)
-        data_features, labels = preprocess_x_y_and_shuffle(data_features, labels)
+        #data_features, labels = preprocess_x_y_and_shuffle(data_features, labels)
 
         #generate list of most poorly fit indexes
         res = check_dataset(raw_data, labels)
@@ -85,15 +88,18 @@ if __name__ == "__main__":
         classifier.fit(X_train, y_train)
         y_pred = classifier.predict(X_test)
         raw_precision[iter_num] = sklearn.metrics.precision_score(y_test, y_pred, average='macro')
+        print_statistics(data_features, labels)
 
         #remove 2% worst fit samples
         print("Removing top 2%")
         counter = 0
         index_list = np.array(res["indices"][:10])
         index_list = np.sort(index_list)
+        print("Indexes to remove: ", index_list)
+        #index_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         for i in range(len(index_list)):
-            data_features = np.delete(data_features, i-counter, 0)
-            labels = np.delete(labels, i-counter)
+            data_features = np.delete(data_features, index_list[i]-counter, 0)
+            labels = np.delete(labels, index_list[i]-counter)
             counter += 1
         assert counter==10, "Wrong number of samples removed"
 
