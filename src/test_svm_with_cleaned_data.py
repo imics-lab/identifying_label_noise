@@ -60,7 +60,7 @@ if __name__ == "__main__":
     print("creating 500 time series sequences with 3 labels over 5 test runs")
     NUM_SAMPLES = 500
     LENGTH = 500
-    NUM_OF_RUNS = 1
+    NUM_OF_RUNS = 5
 
     raw_precision = np.zeros((NUM_OF_RUNS))
     cleaned_precision = np.zeros((NUM_OF_RUNS))
@@ -84,6 +84,7 @@ if __name__ == "__main__":
 
         #generate list of most poorly fit indexes
         res = check_dataset(raw_data, labels)
+        print("Classes represtnted in this data: ", res["Classes"])
 
         #train and test on raw features
         X_train, X_test, y_train, y_test = train_test_split(data_features, labels, test_size=0.2, shuffle=False)

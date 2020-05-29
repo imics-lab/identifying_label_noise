@@ -375,7 +375,7 @@ def check_dataset(X, y, hyperparams=None):
 
         # Set up early stopping
         do_val_split = X.shape[0] > 1000
-        metric = "acc"
+        metric = "accuracy"
         es = EarlyStopping(monitor="val_" + metric if do_val_split else metric,
                            min_delta=0.01, patience=5, verbose=0, mode='max', baseline=None,
                            restore_best_weights=True)
@@ -391,7 +391,7 @@ def check_dataset(X, y, hyperparams=None):
         X = np.resize(X, (X.shape[0], X.shape[1]))
         print('Input samples: ', len(X), " and input targets: ", len(y))
         #nn.fit(X, y, epochs=100, verbose=0, callbacks=[es], class_weight=class_weight, validation_split=val_split_size)
-        nn.fit(X, y, epochs=40)
+        nn.fit(X, y, epochs=40, verbose=0, callbacks=[es], class_weight=class_weight, validation_split=val_split_size)
         pred = nn.predict_proba(X)  # predict test set
 
     else:

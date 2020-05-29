@@ -23,12 +23,12 @@ def get_model_1d_cnn(shape_x, shape_y):
         MaxPooling1D(pool_size=(48), data_format='channels_first'),
         Dropout(0.25),
         Flatten(),
-        Dense(128, activation="relu"),
+        Dense(128, activation="sigmoid"),
         Dropout(0.5),
         Dense(shape_y, activation="softmax")
     ])
 
     model.compile(optimizer='RMSprop', loss='mse', metrics=['accuracy'])
 
-    model.summary()
+    #model.summary()
     return model
