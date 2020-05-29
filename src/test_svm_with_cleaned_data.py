@@ -6,8 +6,9 @@
 #SVM trained with and without cleaned datagen
 
 import sklearn
-from sklearn.model_selection import train_test_split
 from sklearn import svm
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score, precision_score
 from labelfix import check_dataset, preprocess_x_y_and_shuffle, print_statistics
 from utils.gen_ts_data import generate_pattern_data_as_dataframe
 import numpy as np
@@ -59,10 +60,12 @@ if __name__ == "__main__":
     print("creating 500 time series sequences with 3 labels over 5 test runs")
     NUM_SAMPLES = 500
     LENGTH = 500
-    NUM_OF_RUNS = 3
+    NUM_OF_RUNS = 1
 
     raw_precision = np.zeros((NUM_OF_RUNS))
     cleaned_precision = np.zeros((NUM_OF_RUNS))
+    raw_accuracy = np.zeros((NUM_OF_RUNS))
+    cleaned_accuracy = np.zeros((NUM_OF_RUNS))
     classifier = svm.LinearSVC(verbose=0)
 
     for iter_num in range(NUM_OF_RUNS):
@@ -74,11 +77,10 @@ if __name__ == "__main__":
         data_features = get_best_features(raw_data, labels)
         raw_data = cast_dataframe_to_array(raw_data, 500)
         data_features = data_features.to_numpy()
-        #print(data_features)
 
         #pre-process and identify data
         raw_data, labels = preprocess_x_y_and_shuffle(raw_data, labels)
-        #data_features, labels = preprocess_x_y_and_shuffle(data_features, labels)
+        data_features, labels = preprocess_x_y_and_shuffle(data_features, labels)
 
         #generate list of most poorly fit indexes
         res = check_dataset(raw_data, labels)
@@ -87,7 +89,10 @@ if __name__ == "__main__":
         X_train, X_test, y_train, y_test = train_test_split(data_features, labels, test_size=0.2, shuffle=False)
         classifier.fit(X_train, y_train)
         y_pred = classifier.predict(X_test)
-        raw_precision[iter_num] = sklearn.metrics.precision_score(y_test, y_pred, average='macro')
+        raw_precision[iter_num] = precision_score(y_test, y_pred, average='macro')
+        raw_accuracy[iter_num] = accuracy_score(y_test, y_pred, normalize=True)
+
+        #check for reasonability
         print_statistics(data_features, labels)
 
         #remove 2% worst fit samples
@@ -96,18 +101,17 @@ if __name__ == "__main__":
         index_list = np.array(res["indices"][:10])
         index_list = np.sort(index_list)
         print("Indexes to remove: ", index_list)
-        #index_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-        for i in range(len(index_list)):
-            data_features = np.delete(data_features, index_list[i]-counter, 0)
-            labels = np.delete(labels, index_list[i]-counter)
-            counter += 1
-        assert counter==10, "Wrong number of samples removed"
+        #print("First feature to remove: ", data_features[index_list[0]])
+        data_features = np.delete(data_features, index_list, 0)
+        labels = np.delete(labels, index_list)
+        #print("Feature at removed index is now: ", data_features[index_list[0]])
 
         #train and test on cleaned data
         X_train, X_test, y_train, y_test = train_test_split(data_features, labels, test_size=0.2, shuffle=False)
         classifier.fit(X_train, y_train)
         y_pred = classifier.predict(X_test)
-        cleaned_precision[iter_num] = sklearn.metrics.precision_score(y_test, y_pred, average='macro')
+        cleaned_precision[iter_num] = precision_score(y_test, y_pred, average='macro')
+        cleaned_accuracy[iter_num] = accuracy_score(y_test, y_pred, normalize=True)
 
         #check for reasonability
         print_statistics(data_features, labels)
@@ -115,10 +119,9 @@ if __name__ == "__main__":
         #clean up loose ends in memory
         gc.collect()
 
-    print("\n\n--------Precision of Raw SVM----------------")
-    for val in raw_precision:
-        print(val)
-
-    print("\n\n--------Precision of Cleaned SVM------------")
-    for val in cleaned_precision:
-        print(val)
+    print("\n\n--------Results----------------")
+    for i in range(NUM_OF_RUNS):
+        print("---Run ", i+1, "---")
+        print("Raw precision: ", raw_precision[i], "\tRaw accuracy: ", raw_accuracy[i])
+        print("Cleaned precision: ", cleaned_precision[i], "\tCleaned accuracy: ", cleaned_accuracy[i])
+        print("\n")
