@@ -87,7 +87,7 @@ def generate_pattern_data_as_dataframe(length=100, numSamples=10, numClasses=3, 
     return df, labels
 
 def generate_pattern_data_as_csv(length=100, numSamples=10, numClasses=3, percentError=3, filename='sample_ts'):
-    labels, df = generate_pattern_data_as_dataframe(length, numSamples, numClasses, percentError)
-    df.to_csv(filename+"_data.csv", encoding='utf-8')
+    data, labels = generate_pattern_data_as_dataframe(length, numSamples, numClasses, percentError)
+    pd.data.to_csv(filename+"_data.csv", encoding='utf-8')
     numpy.savetext(filename+"_labels.csv", labels, delimiter=",")
     return
