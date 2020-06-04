@@ -15,8 +15,9 @@ import numpy as np
 import pandas as pd
 import gc
 from tensorflow.keras.utils import to_categorical
-from tsfresh import extract_features, select_features
+from tsfresh import extract_features, select_features, extract_relevant_features
 from tsfresh.utilities.dataframe_functions import impute
+from tsfresh.feature_extraction import EfficientFCParameters
 
 def cast_array_to_dataframe(X):
     numSamples = len(X)
@@ -49,18 +50,20 @@ def cast_dataframe_to_array(X, numSamples):
 
 
 def get_best_features(X, y):
-    ext = extract_features(X, column_id="id", column_sort="time")
-    imp = impute(ext)
-    sel = select_features(ext, y)
+    labels = pd.DataFrame({'y':y})
+    ext = extract_features(X, column_id="id", column_sort="time", default_fc_parameters=EfficientFCParameters())
+    #imp = impute(ext)
+    #sel = select_features(imp, y,  fdr_level=0.02, ml_task='classification')
+    #sel = extract_relevant_features(X, labels['y'], column_id='id', column_sort='time')
     #print("Features selected from data")
     #print(sel)
-    return sel
+    return ext
 
 if __name__ == "__main__":
     print("creating 500 time series sequences with 3 labels over 5 test runs")
     NUM_SAMPLES = 500
     LENGTH = 500
-    NUM_OF_RUNS = 5
+    NUM_OF_RUNS = 10
 
     raw_precision = np.zeros((NUM_OF_RUNS))
     cleaned_precision = np.zeros((NUM_OF_RUNS))

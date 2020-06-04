@@ -51,19 +51,21 @@ def generate_pattern_data_as_array(length=100, avg_pattern_length=5, avg_amplitu
 
     return np.array(data)
 
-def generate_pattern_data_as_dataframe(length=100, numSamples=10, numClasses=3):
+def generate_pattern_data_as_dataframe(length=100, numSamples=10, numClasses=3, percentError=3):
     id = np.zeros(length*numSamples)
     time = np.zeros(length*numSamples)
     data = np.zeros(length*numSamples)
     labels = np.zeros(numSamples)
     start = 0;
+    gremlin = 0;
+    gremlinCounter = 0;
     amplitude = np.random.randint(1, 8, size=(numClasses))
     pattern_length = np.random.randint(8, 32, size=(numClasses))
     var_pattern_length = np.random.randint(16, 64, size=(numClasses))
     var_amplitude = np.random.randint(1, 4, size=(numClasses))
     for i in range(numSamples):
-        label = random.randint(0, numClasses-1);
-        labels[i] = label
+        gremlin = random.randint(0, 100)
+        label = random.randint(0, numClasses-1)
         for j in range(length):
             id[i*length + j] = i
             time[i*length + j] = j
@@ -74,8 +76,18 @@ def generate_pattern_data_as_dataframe(length=100, numSamples=10, numClasses=3):
             variance_pattern_length=var_pattern_length[label],
             variance_amplitude=var_amplitude[label])
         start += length
+        if gremlin < percentError:
+            labels = (labels + random.randint(1, numClasses-1)) % numClasses
+            gremlinCounter += 1
+        labels[i] = label
 
     samples = {'id':id, 'time':time, 'x':data}
     df = pd.DataFrame(samples, columns=['id', 'time', 'x'])
-    #print("I made a dataframe:\n", df)
+    print(gremlinCounter, " incorrect labels in data")
     return df, labels
+
+def generate_pattern_data_as_csv(length=100, numSamples=10, numClasses=3, percentError=3, filename='sample_ts'):
+    labels, df = generate_pattern_data_as_dataframe(length, numSamples, numClasses, percentError)
+    df.to_csv(filename+"_data.csv", encoding='utf-8')
+    numpy.savetext(filename+"_labels.csv", labels, delimiter=",")
+    return
