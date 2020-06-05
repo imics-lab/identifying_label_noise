@@ -11,6 +11,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, precision_score
 from labelfix import check_dataset, preprocess_x_y_and_shuffle, print_statistics
 from utils.gen_ts_data import generate_pattern_data_as_dataframe
+from utils.ts_feature_toolkit import get_features_for_set
 import numpy as np
 import pandas as pd
 import gc
@@ -18,6 +19,7 @@ from tensorflow.keras.utils import to_categorical
 from tsfresh import extract_features, select_features, extract_relevant_features
 from tsfresh.utilities.dataframe_functions import impute
 from tsfresh.feature_extraction import EfficientFCParameters
+import matplotlib.pyplot as plt
 
 def cast_array_to_dataframe(X):
     numSamples = len(X)
@@ -61,8 +63,8 @@ if __name__ == "__main__":
     #print("creating 500 time series sequences with 3 labels over 5 test runs")
     NUM_SAMPLES = 500
     LENGTH = 500
-    NUM_OF_RUNS = 10
-    DATASET_NUM = 1
+    NUM_OF_RUNS = 5
+    DATASET_NUM = 3
 
     raw_precision = np.zeros((NUM_OF_RUNS))
     cleaned_precision = np.zeros((NUM_OF_RUNS))
@@ -75,16 +77,17 @@ if __name__ == "__main__":
         print("--------------Run Number: ", iter_num+1, "--------------------")
         #generate data in 3 classes
         #raw_data, labels = generate_pattern_data_as_dataframe(length=LENGTH, numSamples=NUM_SAMPLES, numClasses=3)
-        data_file = "datasets/svm_test"+DATASET_NUM+"_data.csv"
-        label_file = "datasets/svm_test"+DATASET_NUM+"_labels.csv"
+        data_file = "src/datasets/svm_test"+str(DATASET_NUM)+"_data.csv"
+        label_file = "src/datasets/svm_test"+str(DATASET_NUM)+"_labels.csv"
         raw_data = pd.read_csv(data_file)
         labels = np.genfromtxt(label_file, delimiter=',')
 
 
         #extract features and convert everything to arrays
-        data_features = get_best_features(raw_data, labels)
-        raw_data = cast_dataframe_to_array(raw_data, 500)
-        data_features = data_features.to_numpy()
+        #data_features = get_best_features(raw_data, labels)
+        raw_data = cast_dataframe_to_array(raw_data, NUM_SAMPLES)
+        data_features = get_features_for_set(raw_data, num_samples=NUM_SAMPLES)
+        #data_features = data_features.to_numpy()
 
         #pre-process and identify data
         raw_data, labels = preprocess_x_y_and_shuffle(raw_data, labels)
@@ -134,3 +137,6 @@ if __name__ == "__main__":
         print("Raw precision: ", raw_precision[i], "\tRaw accuracy: ", raw_accuracy[i])
         print("Cleaned precision: ", cleaned_precision[i], "\tCleaned accuracy: ", cleaned_accuracy[i])
         print("\n")
+
+    plt.plot(raw_data[0,:])
+    plt.show()
