@@ -51,13 +51,11 @@ def cast_dataframe_to_array(X, numSamples):
 
 def get_best_features(X, y):
     labels = pd.DataFrame({'y':y})
-    ext = extract_features(X, column_id="id", column_sort="time", default_fc_parameters=EfficientFCParameters())
+    #ext = extract_features(X, column_id="id", column_sort="time", default_fc_parameters=EfficientFCParameters())
     #imp = impute(ext)
     #sel = select_features(imp, y,  fdr_level=0.02, ml_task='classification')
-    #sel = extract_relevant_features(X, labels['y'], column_id='id', column_sort='time')
-    #print("Features selected from data")
-    #print(sel)
-    return ext
+    sel = extract_relevant_features(X, labels['y'], column_id='id', column_sort='time')
+    return sel
 
 if __name__ == "__main__":
     print("creating 500 time series sequences with 3 labels over 5 test runs")

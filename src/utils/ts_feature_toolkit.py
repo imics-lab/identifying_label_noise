@@ -7,6 +7,8 @@ import scipy
 from scipy.fft import fft
 from scipy import signal
 import numpy as np
+from tsfresh import feature_calculators as fc
+from tsfresh.utilities.dataframe_functions import impute
 
 def get_normalized_signal_energy(X):
     return np.mean(np.square(X))
@@ -20,11 +22,26 @@ def get_features_from_one_signal(X, sample_rate=50):
     assert X.ndim ==1, "Expected single signal in feature extraction"
     mean = np.mean(X)
     stdev = np.std(X)
-    welch_f, welch_psd = signal.welch(X, fs=sample_rate);
-    peak_psd = np.amax(welch_psd)
-    energy = get_normalized_signal_energy(X)
-    zcr = get_zero_crossing_rate(X)
+    abs_energy = fc.abs_energy(X)
+    sum_of_changes = fc.absolute_sum_of_changes(X)
+    benford = fc.benford_correlation(X)
+    count_above_mean = fc.count_above_mean(X)
+    count_below_mean = fc.count_below_mean(X)
+    kurtosis = fc.kurtosis(X)
+    longest_above = fc.longest_strike_above_mean(X)
+    zero_crossing = fc.number_crossing_m(X, mean)
+    num_peaks = fc.number_peaks(X, sample_rate/10)
+    sample_entropy = fc.sample_entropy(X)
 
-
-
-    return [mean, stdev, energy, zcr]
+    return impute([mean,
+        stdev,
+        abs_energy,
+        sum_of_changes,
+        benford,
+        count_above_mean,
+        count_below_mean,
+        kurtosis,
+        longest_above,
+        zero_crossing,
+        num_peaks,
+        sample_entropy])
