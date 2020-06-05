@@ -58,10 +58,11 @@ def get_best_features(X, y):
     return sel
 
 if __name__ == "__main__":
-    print("creating 500 time series sequences with 3 labels over 5 test runs")
+    #print("creating 500 time series sequences with 3 labels over 5 test runs")
     NUM_SAMPLES = 500
     LENGTH = 500
     NUM_OF_RUNS = 10
+    DATASET_NUM = 1
 
     raw_precision = np.zeros((NUM_OF_RUNS))
     cleaned_precision = np.zeros((NUM_OF_RUNS))
@@ -69,10 +70,16 @@ if __name__ == "__main__":
     cleaned_accuracy = np.zeros((NUM_OF_RUNS))
     classifier = svm.LinearSVC(verbose=0)
 
+    print("Running test on data set: ", DATASET_NUM)
     for iter_num in range(NUM_OF_RUNS):
         print("--------------Run Number: ", iter_num+1, "--------------------")
         #generate data in 3 classes
-        raw_data, labels = generate_pattern_data_as_dataframe(length=LENGTH, numSamples=NUM_SAMPLES, numClasses=3)
+        #raw_data, labels = generate_pattern_data_as_dataframe(length=LENGTH, numSamples=NUM_SAMPLES, numClasses=3)
+        data_file = "datasets/svm_test"+DATASET_NUM+"_data.csv"
+        label_file = "datasets/svm_test"+DATASET_NUM+"_labels.csv"
+        raw_data = pd.read_csv(data_file)
+        labels = np.genfromtxt(label_file, delimiter=',')
+
 
         #extract features and convert everything to arrays
         data_features = get_best_features(raw_data, labels)
