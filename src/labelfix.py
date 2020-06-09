@@ -51,6 +51,7 @@ def _get_indices(pred, y):
     if y_squeezed.ndim == 2:
         dots = [np.dot(pred[i], y_squeezed[i]) for i in range(len(pred))]  # one-hot y
     elif y_squeezed.ndim == 1:
+        print("y squeezed of i: ", y_squeezed[0])
         dots = [pred[i, y_squeezed[i]] for i in range(len(pred))]  # numeric y
     else:
         raise ValueError("Wrong dimension of y!")
@@ -377,9 +378,7 @@ def check_dataset(X, y, hyperparams=None):
         # Set up early stopping
         do_val_split = X.shape[0] > 1000
         metric = "accuracy"
-        es = EarlyStopping(monitor="val_" + metric if do_val_split else metric,
-                           min_delta=0.01, patience=5, verbose=0, mode='max', baseline=None,
-                           restore_best_weights=True)
+        es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=5)
 
         # Grid Seach Loop
         val_split_size = 0.05
@@ -392,7 +391,7 @@ def check_dataset(X, y, hyperparams=None):
         X = np.resize(X, (X.shape[0], X.shape[1]))
         print('Input samples: ', len(X), " and input targets: ", len(y))
         #nn.fit(X, y, epochs=100, verbose=0, callbacks=[es], class_weight=class_weight, validation_split=val_split_size)
-        nn.fit(X, y, epochs=60, verbose=1, callbacks=[es], validation_split=val_split_size)
+        nn.fit(X, y, epochs=20, verbose=1, callbacks=[es], validation_split=val_split_size, batch_size=10)
         pred = nn.predict_proba(X)  # predict test set
 
     else:

@@ -62,7 +62,7 @@ def get_best_features(X, y):
 if __name__ == "__main__":
     #print("creating 500 time series sequences with 3 labels over 5 test runs")
     NUM_OF_RUNS = 5
-    DATASET_NUM = 3
+    DATASET_NUM = 1
 
     raw_precision = np.zeros((NUM_OF_RUNS))
     cleaned_precision = np.zeros((NUM_OF_RUNS))
@@ -80,7 +80,7 @@ if __name__ == "__main__":
         print("--------------Run Number: ", iter_num+1, "--------------------")
 
         raw_data = np.genfromtxt(data_file, delimiter=',')
-        labels = np.genfromtxt(label_file, delimiter=',')
+        labels = np.genfromtxt(label_file, delimiter=',', dtype='int')
         print(len(raw_data), " samples in dataset")
         print(len(labels), " labels in dataset")
         print(max(labels)+1, " distinct labels")
@@ -90,7 +90,6 @@ if __name__ == "__main__":
 
         #pre-process and identify data
         raw_data, labels = preprocess_x_y_and_shuffle(raw_data, labels)
-        data_features, labels = preprocess_x_y_and_shuffle(data_features, labels)
 
         #generate list of most poorly fit indexes
         res = check_dataset(raw_data, labels)
@@ -109,7 +108,8 @@ if __name__ == "__main__":
         #remove 2% worst fit samples
         print("Removing top 2%")
         counter = 0
-        index_list = np.array(res["indices"][:10])
+        rem_percent = int(NUM_SAMPLES * 0.02)
+        index_list = np.array(res["indices"][:rem_percent])
         index_list = np.sort(index_list)
         print("Indexes to remove: ", index_list)
         data_features = np.delete(data_features, index_list, 0)

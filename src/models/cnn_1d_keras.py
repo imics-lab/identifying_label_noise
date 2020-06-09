@@ -11,16 +11,18 @@ def get_model_1d_cnn(shape_x, shape_y):
     :param shape_y:         tuple of ints, Shape of the label
     :return:                Keras model, The compiled model ready for training
     """
-    print("buidling 1d cnn X=", shape_x, " y=", shape_y)
+    #print("buidling 1d cnn X=", shape_x, " y=", shape_y)
 
     model = Sequential([
         Input(shape=shape_x),
         Reshape((shape_x,1)),
-        Conv1D(filters=48, kernel_size=16, activation='relu', padding='same', use_bias=True),
+        Conv1D(filters=64, kernel_size=16, activation='relu', padding='same', use_bias=True),
+        Conv1D(filters=64, kernel_size=16, activation='relu', padding='same', use_bias=True),
         MaxPooling1D(pool_size=(16), data_format='channels_first'),
         Dropout(0.25),
-        Conv1D(filters=48, kernel_size=8, activation='relu', padding='same', use_bias=True),
-        MaxPooling1D(pool_size=(16), data_format='channels_first'),
+        Conv1D(filters=32, kernel_size=8, activation='relu', padding='same', use_bias=True),
+        Conv1D(filters=32, kernel_size=8, activation='relu', padding='same', use_bias=True),
+        MaxPooling1D(pool_size=(8), data_format='channels_first'),
         Dropout(0.25),
         Flatten(),
         Dense(128, activation="relu"),
@@ -28,7 +30,7 @@ def get_model_1d_cnn(shape_x, shape_y):
         Dense(shape_y, activation="softmax")
     ])
 
-    model.compile(optimizer='RMSprop', loss='mse', metrics=['accuracy'])
+    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
     #model.summary()
     return model

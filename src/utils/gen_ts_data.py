@@ -28,7 +28,7 @@ std_generators = [generate_bell, generate_funnel, generate_cylinder]
 
 def generate_pattern_data_as_array(length=100, avg_pattern_length=5, avg_amplitude=1,
                           default_variance=1, variance_pattern_length=10, variance_amplitude=2,
-                          generators=std_generators, include_negatives = True):
+                          generators=std_generators, include_negatives=True):
     data = np.random.normal(0, default_variance, length)
     current_start = random.randint(0, avg_pattern_length)
     current_length = current_length = max(1, math.ceil(random.gauss(avg_pattern_length, variance_pattern_length)))
@@ -55,7 +55,7 @@ def generate_pattern_data_as_dataframe(length=100, numSamples=10, numClasses=3, 
     id = np.zeros(length*numSamples)
     time = np.zeros(length*numSamples)
     data = np.zeros(length*numSamples)
-    labels = np.zeros(numSamples)
+    labels = np.zeros(numSamples, dtype='int')
     start = 0;
     gremlin = 0;
     gremlinCounter = 0;
@@ -88,21 +88,23 @@ def generate_pattern_data_as_dataframe(length=100, numSamples=10, numClasses=3, 
 
 def generate_pattern_data_as_csv(length=100, numSamples=10, numClasses=3, percentError=3, filename='sample_ts'):
     data, labels = generate_pattern_data_as_dataframe(length, numSamples, numClasses, percentError)
-    print(type(data))
-    print(type(labels))
     data.to_csv(filename+"_data.csv", encoding='utf-8')
     np.savetxt(filename+"_labels.csv", labels, delimiter=",")
     return
 
 def generate_pattern_array_as_csv(length=100, numSamples=10, numClasses=3, percentError=3, filename='sample_ts'):
     data = np.zeros((numSamples,length))
-    labels = np.zeros(numSamples)
+    labels = np.zeros(numSamples, dtype='int')
     gremlin = 0;
     gremlinCounter = 0;
     amplitude = np.random.randint(1, 8, size=(numClasses))
+    print("Amplitude array: ", amplitude)
     pattern_length = np.random.randint(8, 32, size=(numClasses))
+    print("Length array: ", pattern_length)
     var_pattern_length = np.random.randint(16, 64, size=(numClasses))
+    print("Length variance array: ", var_pattern_length)
     var_amplitude = np.random.randint(1, 4, size=(numClasses))
+    print("Amplitude variance array: ", var_amplitude)
     for i in range(numSamples):
         gremlin = random.randint(0, 100)
         label = random.randint(0, numClasses-1)
@@ -113,11 +115,11 @@ def generate_pattern_array_as_csv(length=100, numSamples=10, numClasses=3, perce
             variance_pattern_length=var_pattern_length[label],
             variance_amplitude=var_amplitude[label])
         if gremlin < percentError:
-            labels = (labels + random.randint(1, numClasses-1)) % numClasses
+            label = (label + random.randint(1, numClasses-1)) % numClasses
             gremlinCounter += 1
-        labels[i] = label
+        labels[i] = int(label)
 
     np.savetxt(filename+"_data.csv", data, delimiter=",")
-    np.savetxt(filename+"_labels.csv", labels, delimiter=",")
-    print(gremlinCounter, " incorrect labels in data")
+    np.savetxt(filename+"_labels.csv", labels, delimiter=",", fmt="%d")
+    print(gremlinCounter, " incorrect labels in data\n\n")
     return
