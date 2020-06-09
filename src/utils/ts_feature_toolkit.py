@@ -8,7 +8,6 @@ from scipy.fft import fft
 from scipy import signal
 import numpy as np
 from tsfresh.feature_extraction import feature_calculators as fc
-#from tsfresh.feature_extraction.feature_calculators import abs_energy, absolute_sum_of_changes, benford_correlation, count_above_mean, count_below_mean, kurtosis, longest_strike_above_mean, number_crossing_m, number_peaks, sample_entropy
 from tsfresh.utilities.dataframe_functions import impute
 
 def get_normalized_signal_energy(X):
@@ -33,6 +32,9 @@ def get_features_from_one_signal(X, sample_rate=50):
     zero_crossing = fc.number_crossing_m(X, mean)
     num_peaks = fc.number_peaks(X, int(sample_rate/10))
     sample_entropy = fc.sample_entropy(X)
+    spectral_density = fc.spkt_welch_density(X, [{"coeff":1}, {"coeff":2}, {"coeff":3}, {"coeff":4}, {"coeff":5}, {"coeff":6}])
+    c, v = zip(*spectral_density)
+    v = np.asarray(v)
 
     return [mean,
         stdev,
@@ -45,11 +47,13 @@ def get_features_from_one_signal(X, sample_rate=50):
         longest_above,
         zero_crossing,
         num_peaks,
-        sample_entropy]
+        sample_entropy,
+        v[0], v[1], v[2], v[3], v[4], v[5]
+    ]
 
 def get_features_for_set(X, sample_rate=50, num_samples=100):
     sample_length = len(X[0])
-    fet = np.zeros((num_samples, 12))
+    fet = np.zeros((num_samples, 18))
     for i in range(num_samples):
         fet[i, :] = get_features_from_one_signal(X[i, :])
     return fet

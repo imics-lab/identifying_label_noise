@@ -61,8 +61,6 @@ def get_best_features(X, y):
 
 if __name__ == "__main__":
     #print("creating 500 time series sequences with 3 labels over 5 test runs")
-    NUM_SAMPLES = 500
-    LENGTH = 500
     NUM_OF_RUNS = 5
     DATASET_NUM = 3
 
@@ -73,21 +71,22 @@ if __name__ == "__main__":
     classifier = svm.LinearSVC(verbose=0)
 
     print("Running test on data set: ", DATASET_NUM)
+    #read one of three data sets with 3 classes
+    data_file = "src/datasets/svm_test"+str(DATASET_NUM)+"_data.csv"
+    label_file = "src/datasets/svm_test"+str(DATASET_NUM)+"_labels.csv"
+
+
     for iter_num in range(NUM_OF_RUNS):
         print("--------------Run Number: ", iter_num+1, "--------------------")
-        #generate data in 3 classes
-        #raw_data, labels = generate_pattern_data_as_dataframe(length=LENGTH, numSamples=NUM_SAMPLES, numClasses=3)
-        data_file = "src/datasets/svm_test"+str(DATASET_NUM)+"_data.csv"
-        label_file = "src/datasets/svm_test"+str(DATASET_NUM)+"_labels.csv"
-        raw_data = pd.read_csv(data_file)
+
+        raw_data = np.genfromtxt(data_file, delimiter=',')
         labels = np.genfromtxt(label_file, delimiter=',')
-
-
-        #extract features and convert everything to arrays
-        #data_features = get_best_features(raw_data, labels)
-        raw_data = cast_dataframe_to_array(raw_data, NUM_SAMPLES)
+        print(len(raw_data), " samples in dataset")
+        print(len(labels), " labels in dataset")
+        print(max(labels)+1, " distinct labels")
+        NUM_SAMPLES = len(raw_data)
+        #extract features
         data_features = get_features_for_set(raw_data, num_samples=NUM_SAMPLES)
-        #data_features = data_features.to_numpy()
 
         #pre-process and identify data
         raw_data, labels = preprocess_x_y_and_shuffle(raw_data, labels)
@@ -95,7 +94,7 @@ if __name__ == "__main__":
 
         #generate list of most poorly fit indexes
         res = check_dataset(raw_data, labels)
-        print("Classes represtnted in this data: ", res["Classes"])
+        print("Classes represented in this data: ", res["Classes"])
 
         #train and test on raw features
         X_train, X_test, y_train, y_test = train_test_split(data_features, labels, test_size=0.2, shuffle=False)
@@ -113,10 +112,8 @@ if __name__ == "__main__":
         index_list = np.array(res["indices"][:10])
         index_list = np.sort(index_list)
         print("Indexes to remove: ", index_list)
-        #print("First feature to remove: ", data_features[index_list[0]])
         data_features = np.delete(data_features, index_list, 0)
         labels = np.delete(labels, index_list)
-        #print("Feature at removed index is now: ", data_features[index_list[0]])
 
         #train and test on cleaned data
         X_train, X_test, y_train, y_test = train_test_split(data_features, labels, test_size=0.2, shuffle=False)

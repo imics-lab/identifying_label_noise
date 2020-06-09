@@ -95,10 +95,29 @@ def generate_pattern_data_as_csv(length=100, numSamples=10, numClasses=3, percen
     return
 
 def generate_pattern_array_as_csv(length=100, numSamples=10, numClasses=3, percentError=3, filename='sample_ts'):
-    data, labels = generate_pattern_data_as_dataframe(length, numSamples, numClasses, percentError)
-    print(type(data))
-    print(type(labels))
-    data = data.to_numpy()
+    data = np.zeros((numSamples,length))
+    labels = np.zeros(numSamples)
+    gremlin = 0;
+    gremlinCounter = 0;
+    amplitude = np.random.randint(1, 8, size=(numClasses))
+    pattern_length = np.random.randint(8, 32, size=(numClasses))
+    var_pattern_length = np.random.randint(16, 64, size=(numClasses))
+    var_amplitude = np.random.randint(1, 4, size=(numClasses))
+    for i in range(numSamples):
+        gremlin = random.randint(0, 100)
+        label = random.randint(0, numClasses-1)
+        data[i, :] = generate_pattern_data_as_array(
+            length=length,
+            avg_pattern_length=pattern_length[label],
+            avg_amplitude=amplitude[label],
+            variance_pattern_length=var_pattern_length[label],
+            variance_amplitude=var_amplitude[label])
+        if gremlin < percentError:
+            labels = (labels + random.randint(1, numClasses-1)) % numClasses
+            gremlinCounter += 1
+        labels[i] = label
+
     np.savetxt(filename+"_data.csv", data, delimiter=",")
     np.savetxt(filename+"_labels.csv", labels, delimiter=",")
+    print(gremlinCounter, " incorrect labels in data")
     return

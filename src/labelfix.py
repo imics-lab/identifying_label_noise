@@ -170,6 +170,7 @@ def preprocess_x_y_and_shuffle(X, y):
     X = np.asarray(X)
 
     # Some sanity checks
+    print("Data: ",  X.shape[0], "\tLabels: ", y.shape[0])
     assert y.shape[0] == X.shape[0], "Features and labels have different size"
     assert X.shape[0] >= 30, "Dataset has less than 30 non-NAN values!"
 
@@ -391,7 +392,7 @@ def check_dataset(X, y, hyperparams=None):
         X = np.resize(X, (X.shape[0], X.shape[1]))
         print('Input samples: ', len(X), " and input targets: ", len(y))
         #nn.fit(X, y, epochs=100, verbose=0, callbacks=[es], class_weight=class_weight, validation_split=val_split_size)
-        nn.fit(X, y, epochs=50, verbose=0, callbacks=[es], validation_split=val_split_size)
+        nn.fit(X, y, epochs=60, verbose=1, callbacks=[es], validation_split=val_split_size)
         pred = nn.predict_proba(X)  # predict test set
 
     else:
