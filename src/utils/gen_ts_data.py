@@ -8,6 +8,7 @@ import pandas as pd
 import random
 import math
 import matplotlib.pyplot as plt
+from utils.ts_feature_toolkit import get_features_for_set
 
 # cylinder bell funnel based on "Learning comprehensible descriptions of multivariate time series"
 def generate_bell(length, amplitude, default_variance):
@@ -60,8 +61,8 @@ def generate_pattern_data_as_dataframe(length=100, numSamples=10, numClasses=3, 
     gremlin = 0;
     gremlinCounter = 0;
     amplitude = np.random.randint(1, 8, size=(numClasses))
-    pattern_length = np.random.randint(8, 32, size=(numClasses))
-    var_pattern_length = np.random.randint(16, 64, size=(numClasses))
+    pattern_length = np.random.randint(1, 32, size=(numClasses))
+    var_pattern_length = np.random.randint(1, 64, size=(numClasses))
     var_amplitude = np.random.randint(1, 4, size=(numClasses))
     for i in range(numSamples):
         gremlin = random.randint(0, 100)
@@ -98,12 +99,16 @@ def generate_pattern_array_as_csv(length=100, numSamples=10, numClasses=3, perce
     gremlin = 0;
     gremlinCounter = 0;
     amplitude = np.random.randint(1, 8, size=(numClasses))
+    amplitude = np.sort(amplitude)
     print("Amplitude array: ", amplitude)
     pattern_length = np.random.randint(8, 32, size=(numClasses))
+    pattern_length = np.sort(pattern_length)
     print("Length array: ", pattern_length)
     var_pattern_length = np.random.randint(16, 64, size=(numClasses))
+    var_pattern_length = np.sort(var_pattern_length)
     print("Length variance array: ", var_pattern_length)
     var_amplitude = np.random.randint(1, 4, size=(numClasses))
+    var_amplitude = np.sort(var_amplitude)
     print("Amplitude variance array: ", var_amplitude)
     for i in range(numSamples):
         gremlin = random.randint(0, 100)
@@ -121,5 +126,7 @@ def generate_pattern_array_as_csv(length=100, numSamples=10, numClasses=3, perce
 
     np.savetxt(filename+"_data.csv", data, delimiter=",")
     np.savetxt(filename+"_labels.csv", labels, delimiter=",", fmt="%d")
+    data = get_features_for_set(data, num_samples=numSamples)
+    np.savetxt(filename+"_features.csv", data, delimiter=",")
     print(gremlinCounter, " incorrect labels in data\n\n")
     return

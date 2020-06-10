@@ -391,7 +391,7 @@ def check_dataset(X, y, hyperparams=None):
         X = np.resize(X, (X.shape[0], X.shape[1]))
         print('Input samples: ', len(X), " and input targets: ", len(y))
         #nn.fit(X, y, epochs=100, verbose=0, callbacks=[es], class_weight=class_weight, validation_split=val_split_size)
-        nn.fit(X, y, epochs=20, verbose=1, callbacks=[es], validation_split=val_split_size, batch_size=10)
+        nn.fit(X, y, epochs=9, verbose=1, callbacks=[es], validation_split=val_split_size, batch_size=10)
         pred = nn.predict_proba(X)  # predict test set
 
     else:

@@ -24,7 +24,7 @@ def get_features_from_one_signal(X, sample_rate=50):
     stdev = np.std(X)
     abs_energy = fc.abs_energy(X)
     sum_of_changes = fc.absolute_sum_of_changes(X)
-    benford = fc.autocorrelation(X, sample_rate)
+    autoc = fc.autocorrelation(X, sample_rate)
     count_above_mean = fc.count_above_mean(X)
     count_below_mean = fc.count_below_mean(X)
     kurtosis = fc.kurtosis(X)
@@ -40,7 +40,7 @@ def get_features_from_one_signal(X, sample_rate=50):
         stdev,
         abs_energy,
         sum_of_changes,
-        benford,
+        autoc,
         count_above_mean,
         count_below_mean,
         kurtosis,

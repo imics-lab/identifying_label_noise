@@ -8,7 +8,8 @@
 import sklearn
 from sklearn import svm
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, precision_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score
+from sklearn.preprocessing import normalize
 from labelfix import check_dataset, preprocess_x_y_and_shuffle, print_statistics
 from utils.gen_ts_data import generate_pattern_data_as_dataframe
 from utils.ts_feature_toolkit import get_features_for_set
@@ -46,21 +47,16 @@ def cast_dataframe_to_array(X, numSamples):
     data = np.reshape(X[['x']].to_numpy(), newshape=(length*numSamples))
     for i in range(numSamples):
         array[i, :] = data[i*length:(i+1)*length]
-    #print("I made an array from a dataframe:\n", array)
     return array
 
 
 
 def get_best_features(X, y):
     labels = pd.DataFrame({'y':y})
-    #ext = extract_features(X, column_id="id", column_sort="time", default_fc_parameters=EfficientFCParameters())
-    #imp = impute(ext)
-    #sel = select_features(imp, y,  fdr_level=0.02, ml_task='classification')
     sel = extract_relevant_features(X, labels['y'], column_id='id', column_sort='time')
     return sel
 
 if __name__ == "__main__":
-    #print("creating 500 time series sequences with 3 labels over 5 test runs")
     NUM_OF_RUNS = 5
     DATASET_NUM = 1
 
@@ -68,25 +64,32 @@ if __name__ == "__main__":
     cleaned_precision = np.zeros((NUM_OF_RUNS))
     raw_accuracy = np.zeros((NUM_OF_RUNS))
     cleaned_accuracy = np.zeros((NUM_OF_RUNS))
-    classifier = svm.LinearSVC(verbose=0)
+    raw_recall = np.zeros((NUM_OF_RUNS))
+    cleaned_recall = np.zeros((NUM_OF_RUNS))
+
+    classifier = svm.LinearSVC(verbose=0, dual=False)
 
     print("Running test on data set: ", DATASET_NUM)
     #read one of three data sets with 3 classes
     data_file = "src/datasets/svm_test"+str(DATASET_NUM)+"_data.csv"
     label_file = "src/datasets/svm_test"+str(DATASET_NUM)+"_labels.csv"
 
+    raw_data = np.genfromtxt(data_file, delimiter=',')
+    labels = np.genfromtxt(label_file, delimiter=',', dtype='int')
+    print(len(raw_data), " samples in dataset")
+    print(len(labels), " labels in dataset")
+    print(max(labels)+1, " distinct labels")
+    NUM_SAMPLES = len(raw_data)
+    #extract features
+    data_features = get_features_for_set(raw_data, num_samples=NUM_SAMPLES)
+    normalize(data_features, copy='False', axis=0)
+
 
     for iter_num in range(NUM_OF_RUNS):
         print("--------------Run Number: ", iter_num+1, "--------------------")
 
-        raw_data = np.genfromtxt(data_file, delimiter=',')
-        labels = np.genfromtxt(label_file, delimiter=',', dtype='int')
-        print(len(raw_data), " samples in dataset")
-        print(len(labels), " labels in dataset")
-        print(max(labels)+1, " distinct labels")
-        NUM_SAMPLES = len(raw_data)
-        #extract features
-        data_features = get_features_for_set(raw_data, num_samples=NUM_SAMPLES)
+        cleaned_features = data_features
+        cleaned_labels = labels
 
         #pre-process and identify data
         raw_data, labels = preprocess_x_y_and_shuffle(raw_data, labels)
@@ -101,6 +104,7 @@ if __name__ == "__main__":
         y_pred = classifier.predict(X_test)
         raw_precision[iter_num] = precision_score(y_test, y_pred, average='macro')
         raw_accuracy[iter_num] = accuracy_score(y_test, y_pred, normalize=True)
+        raw_recall[iter_num] = recall_score(y_test, y_pred, average='macro')
 
         #check for reasonability
         print_statistics(data_features, labels)
@@ -112,15 +116,16 @@ if __name__ == "__main__":
         index_list = np.array(res["indices"][:rem_percent])
         index_list = np.sort(index_list)
         print("Indexes to remove: ", index_list)
-        data_features = np.delete(data_features, index_list, 0)
-        labels = np.delete(labels, index_list)
+        cleaned_features = np.delete(cleaned_features, index_list, 0)
+        cleaned_labels = np.delete(cleaned_labels, index_list)
 
         #train and test on cleaned data
-        X_train, X_test, y_train, y_test = train_test_split(data_features, labels, test_size=0.2, shuffle=False)
+        X_train, X_test, y_train, y_test = train_test_split(cleaned_features, cleaned_labels, test_size=0.2, shuffle=False)
         classifier.fit(X_train, y_train)
         y_pred = classifier.predict(X_test)
         cleaned_precision[iter_num] = precision_score(y_test, y_pred, average='macro')
         cleaned_accuracy[iter_num] = accuracy_score(y_test, y_pred, normalize=True)
+        cleaned_recall[iter_num] = recall_score(y_test, y_pred, average='macro')
 
         #check for reasonability
         print_statistics(data_features, labels)
@@ -131,8 +136,8 @@ if __name__ == "__main__":
     print("\n\n--------Results----------------")
     for i in range(NUM_OF_RUNS):
         print("---Run ", i+1, "---")
-        print("Raw precision: ", raw_precision[i], "\tRaw accuracy: ", raw_accuracy[i])
-        print("Cleaned precision: ", cleaned_precision[i], "\tCleaned accuracy: ", cleaned_accuracy[i])
+        print("Raw precision: ", raw_precision[i], "\tRaw accuracy: ", raw_accuracy[i], "\tRaw recall: ", raw_recall[i])
+        print("Cleaned precision: ", cleaned_precision[i], "\tCleaned accuracy: ", cleaned_accuracy[i], "\tCleaned recall: ", cleaned_recall[i])
         print("\n")
 
     plt.plot(raw_data[0,:])
