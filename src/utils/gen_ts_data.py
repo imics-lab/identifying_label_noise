@@ -98,17 +98,24 @@ def generate_pattern_array_as_csv(length=100, numSamples=10, numClasses=3, perce
     labels = np.zeros(numSamples, dtype='int')
     gremlin = 0;
     gremlinCounter = 0;
-    amplitude = np.random.randint(1, 8, size=(numClasses))
-    amplitude = np.sort(amplitude)
+    if (numClasses > 5):
+        print("Max number of classes is 5")
+        numClasses = 5
+    #amplitude = np.random.randint(1, 8, size=(numClasses))
+    #amplitude = np.sort(amplitude)
+    amplitude = [1, 2, 4, 8, 16]
     print("Amplitude array: ", amplitude)
-    pattern_length = np.random.randint(8, 32, size=(numClasses))
-    pattern_length = np.sort(pattern_length)
+    #pattern_length = np.random.randint(8, 32, size=(numClasses))
+    #pattern_length = np.sort(pattern_length)
+    pattern_length =  [2, 4, 8, 16, 32, 64]
     print("Length array: ", pattern_length)
-    var_pattern_length = np.random.randint(16, 64, size=(numClasses))
-    var_pattern_length = np.sort(var_pattern_length)
+    #var_pattern_length = np.random.randint(16, 64, size=(numClasses))
+    #var_pattern_length = np.sort(var_pattern_length)
+    var_pattern_length = [2, 4, 8, 16, 32]
     print("Length variance array: ", var_pattern_length)
-    var_amplitude = np.random.randint(1, 4, size=(numClasses))
-    var_amplitude = np.sort(var_amplitude)
+    #var_amplitude = np.random.randint(1, 4, size=(numClasses))
+    #var_amplitude = np.sort(var_amplitude)
+    var_amplitude = [1, 2, 4, 6, 8]
     print("Amplitude variance array: ", var_amplitude)
     for i in range(numSamples):
         gremlin = random.randint(0, 100)

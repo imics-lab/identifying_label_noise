@@ -58,7 +58,7 @@ def get_best_features(X, y):
 
 if __name__ == "__main__":
     NUM_OF_RUNS = 5
-    DATASET_NUM = 1
+    DATASET_NUM = 3
 
     raw_precision = np.zeros((NUM_OF_RUNS))
     cleaned_precision = np.zeros((NUM_OF_RUNS))
