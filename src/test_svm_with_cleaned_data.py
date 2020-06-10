@@ -73,6 +73,7 @@ if __name__ == "__main__":
     #read one of three data sets with 3 classes
     data_file = "src/datasets/svm_test"+str(DATASET_NUM)+"_data.csv"
     label_file = "src/datasets/svm_test"+str(DATASET_NUM)+"_labels.csv"
+    feature_file = "src/datasets/svm_test"+str(DATASET_NUM)+"_features.csv"
 
     raw_data = np.genfromtxt(data_file, delimiter=',')
     labels = np.genfromtxt(label_file, delimiter=',', dtype='int')
@@ -81,7 +82,8 @@ if __name__ == "__main__":
     print(max(labels)+1, " distinct labels")
     NUM_SAMPLES = len(raw_data)
     #extract features
-    data_features = get_features_for_set(raw_data, num_samples=NUM_SAMPLES)
+    #data_features = get_features_for_set(raw_data, num_samples=NUM_SAMPLES)
+    data_features = np.genfromtxt(data_file, delimiter=',')
     normalize(data_features, copy='False', axis=0)
 
 
