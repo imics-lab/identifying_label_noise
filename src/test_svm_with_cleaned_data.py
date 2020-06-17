@@ -89,15 +89,15 @@ if __name__ == "__main__":
     data_features = np.genfromtxt(feature_file, delimiter=',')
     normalize(data_features, copy='False', axis=0)
 
+    #pre-process and identify data
+    raw_data, labels = preprocess_x_y_and_shuffle(raw_data, labels)
+
 
     for iter_num in range(NUM_OF_RUNS):
         print("--------------Run Number: ", iter_num+1, "--------------------")
 
         cleaned_features = data_features
         cleaned_labels = labels
-
-        #pre-process and identify data
-        raw_data, labels = preprocess_x_y_and_shuffle(raw_data, labels)
 
         #generate list of most poorly fit indexes
         res_ts = check_dataset(raw_data, labels)
