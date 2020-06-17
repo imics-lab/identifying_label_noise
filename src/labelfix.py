@@ -320,14 +320,14 @@ def check_dataset(X, y, hyperparams=None):
                 param_grid=hyperparameter_dict,
                 scoring=make_scorer(lambda y, y_pred: f1_score(y, y_pred, average='macro')),
                 n_jobs=num_cpus + 1,
-                verbose=0,
+                verbose=1,
                 cv=3,
-                iid=False,
+                #iid=False,
                 error_score='raise',
                 return_train_score=False,
                 refit=False)
 
-            grid_search_transfer.fit(X, y, verbose=0, **fit_params)
+            grid_search_transfer.fit(X, y, verbose=1, **fit_params)
             best_params = grid_search_transfer.best_params_
             print("Best score found: {} with hyper params {}".format(grid_search_transfer.best_score_, best_params))
         else:
@@ -341,8 +341,9 @@ def check_dataset(X, y, hyperparams=None):
         del bp["epochs"]
 
         nn = dnk.get_model_dense(**bp)
-        nn.fit(X, y, epochs=best_params["epochs"], verbose=0, callbacks=[es], class_weight=class_weight,
-                validation_split=val_split_size if do_val_split else None)
+        #nn.fit(X, y, epochs=best_params["epochs"], verbose=0, callbacks=[es], class_weight=class_weight,
+        #        validation_split=val_split_size if do_val_split else None)
+        nn.fit(X,y, epochs=best_params["epochs"], verbose=0)
         pred = nn.predict_proba(X)  # predict test set
 
     # ========================================== if image ==========================================
@@ -391,7 +392,7 @@ def check_dataset(X, y, hyperparams=None):
         X = np.resize(X, (X.shape[0], X.shape[1]))
         print('Input samples: ', len(X), " and input targets: ", len(y))
         #nn.fit(X, y, epochs=100, verbose=0, callbacks=[es], class_weight=class_weight, validation_split=val_split_size)
-        nn.fit(X, y, epochs=9, verbose=1, callbacks=[es], validation_split=val_split_size, batch_size=10)
+        nn.fit(X, y, epochs=9, verbose=0, callbacks=[es], validation_split=val_split_size, batch_size=10)
         pred = nn.predict_proba(X)  # predict test set
 
     else:

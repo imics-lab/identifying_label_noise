@@ -137,3 +137,49 @@ def generate_pattern_array_as_csv(length=100, numSamples=10, numClasses=3, perce
     np.savetxt(filename+"_features.csv", data, delimiter=",")
     print(gremlinCounter, " incorrect labels in data\n\n")
     return
+
+def generate_pattern_data_as_csv(length=100, numSamples=10, numClasses=3, percentError=3, filename='sample_ts'):
+    data, labels = generate_pattern_data_as_dataframe(length, numSamples, numClasses, percentError)
+    data.to_csv(filename+"_data.csv", encoding='utf-8')
+    np.savetxt(filename+"_labels.csv", labels, delimiter=",")
+    return
+
+def generate_pattern_array_as_csv_with_indexes(length=100, numSamples=10, numClasses=3, percentError=3, filename='sample_ts'):
+    data = np.zeros((numSamples,length))
+    labels = np.zeros(numSamples, dtype='int')
+    gremlin = 0;
+    gremlinCounter = 0;
+    badIndexes = np.array();
+    if (numClasses > 5):
+        print("Max number of classes is 5")
+        numClasses = 5
+    amplitude = [1, 2, 4, 8, 16]
+    print("Amplitude array: ", amplitude)
+    pattern_length =  [2, 4, 8, 16, 32, 64]
+    print("Length array: ", pattern_length)
+    var_pattern_length = [2, 4, 8, 16, 32]
+    print("Length variance array: ", var_pattern_length)
+    var_amplitude = [1, 2, 4, 6, 8]
+    print("Amplitude variance array: ", var_amplitude)
+    for i in range(numSamples):
+        gremlin = random.randint(0, 100)
+        label = random.randint(0, numClasses-1)
+        data[i, :] = generate_pattern_data_as_array(
+            length=length,
+            avg_pattern_length=pattern_length[label],
+            avg_amplitude=amplitude[label],
+            variance_pattern_length=var_pattern_length[label],
+            variance_amplitude=var_amplitude[label])
+        if gremlin < percentError:
+            label = (label + random.randint(1, numClasses-1)) % numClasses
+            gremlinCounter += 1
+            np.append(badIndexes, [i])
+        labels[i] = int(label)
+
+    np.savetxt(filename+"_data.csv", data, delimiter=",")
+    np.savetxt(filename+"_labels.csv", labels, delimiter=",", fmt="%d")
+    data = get_features_for_set(data, num_samples=numSamples)
+    np.savetxt(filename+"_features.csv", data, delimiter=",")
+    np.savetext(filename+"_swappedIndexes.csv", badIndexes, delimiter=",")
+    print(gremlinCounter, " incorrect labels in data\n\n")
+    return

@@ -61,11 +61,14 @@ if __name__ == "__main__":
     DATASET_NUM = 3
 
     raw_precision = np.zeros((NUM_OF_RUNS))
-    cleaned_precision = np.zeros((NUM_OF_RUNS))
+    cleaned_precision_as_ts = np.zeros((NUM_OF_RUNS))
+    cleaned_precision_as_numerical = np.zeros((NUM_OF_RUNS))
     raw_accuracy = np.zeros((NUM_OF_RUNS))
-    cleaned_accuracy = np.zeros((NUM_OF_RUNS))
+    cleaned_accuracy_as_ts = np.zeros((NUM_OF_RUNS))
+    cleaned_accuracy_as_numerical = np.zeros((NUM_OF_RUNS))
     raw_recall = np.zeros((NUM_OF_RUNS))
-    cleaned_recall = np.zeros((NUM_OF_RUNS))
+    cleaned_recall_as_ts = np.zeros((NUM_OF_RUNS))
+    cleaned_recall_as_numerical = np.zeros((NUM_OF_RUNS))
 
     classifier = svm.LinearSVC(verbose=0, dual=False)
 
@@ -83,7 +86,7 @@ if __name__ == "__main__":
     NUM_SAMPLES = len(raw_data)
     #extract features
     #data_features = get_features_for_set(raw_data, num_samples=NUM_SAMPLES)
-    data_features = np.genfromtxt(data_file, delimiter=',')
+    data_features = np.genfromtxt(feature_file, delimiter=',')
     normalize(data_features, copy='False', axis=0)
 
 
@@ -97,8 +100,19 @@ if __name__ == "__main__":
         raw_data, labels = preprocess_x_y_and_shuffle(raw_data, labels)
 
         #generate list of most poorly fit indexes
-        res = check_dataset(raw_data, labels)
-        print("Classes represented in this data: ", res["Classes"])
+        res_ts = check_dataset(raw_data, labels)
+        res_numercical = check_dataset(data_features, labels, hyperparams={
+            "input_dim": data_features.shape[1],
+            "output_dim": max(labels)+1,
+            "num_hidden": 3,
+            "size_hidden": 50,
+            "dropout": 0.1,
+            "epochs": 400,
+            "learn_rate": 1e-2,
+            "activation": "relu"
+        })
+        print("Classes represented in ts data: ", res_ts["Classes"])
+        print("Classes represented in numerical data: ", res_numercical["Classes"])
 
         #train and test on raw features
         X_train, X_test, y_train, y_test = train_test_split(data_features, labels, test_size=0.2, shuffle=False)
@@ -111,11 +125,11 @@ if __name__ == "__main__":
         #check for reasonability
         print_statistics(data_features, labels)
 
-        #remove 2% worst fit samples
-        print("Removing top 2%")
+        #remove 2% worst fit samples using ts model
+        print("Removing top 2% as ts data")
         counter = 0
         rem_percent = int(NUM_SAMPLES * 0.02)
-        index_list = np.array(res["indices"][:rem_percent])
+        index_list = np.array(res_ts["indices"][:rem_percent])
         index_list = np.sort(index_list)
         print("Indexes to remove: ", index_list)
         cleaned_features = np.delete(cleaned_features, index_list, 0)
@@ -125,9 +139,33 @@ if __name__ == "__main__":
         X_train, X_test, y_train, y_test = train_test_split(cleaned_features, cleaned_labels, test_size=0.2, shuffle=False)
         classifier.fit(X_train, y_train)
         y_pred = classifier.predict(X_test)
-        cleaned_precision[iter_num] = precision_score(y_test, y_pred, average='macro')
-        cleaned_accuracy[iter_num] = accuracy_score(y_test, y_pred, normalize=True)
-        cleaned_recall[iter_num] = recall_score(y_test, y_pred, average='macro')
+        cleaned_precision_as_ts[iter_num] = precision_score(y_test, y_pred, average='macro')
+        cleaned_accuracy_as_ts[iter_num] = accuracy_score(y_test, y_pred, normalize=True)
+        cleaned_recall_as_ts[iter_num] = recall_score(y_test, y_pred, average='macro')
+
+        #check for reasonability
+        print_statistics(data_features, labels)
+
+        cleaned_features = data_features
+        cleaned_labels = labels
+
+        #remove 2% worst fit samples using numerical model
+        print("Removing top 2% as numerical data")
+        counter = 0
+        rem_percent = int(NUM_SAMPLES * 0.02)
+        index_list = np.array(res_numercical["indices"][:rem_percent])
+        index_list = np.sort(index_list)
+        print("Indexes to remove: ", index_list)
+        cleaned_features = np.delete(cleaned_features, index_list, 0)
+        cleaned_labels = np.delete(cleaned_labels, index_list)
+
+        #train and test on cleaned data
+        X_train, X_test, y_train, y_test = train_test_split(cleaned_features, cleaned_labels, test_size=0.2, shuffle=False)
+        classifier.fit(X_train, y_train)
+        y_pred = classifier.predict(X_test)
+        cleaned_precision_as_numerical[iter_num] = precision_score(y_test, y_pred, average='macro')
+        cleaned_accuracy_as_numerical[iter_num] = accuracy_score(y_test, y_pred, normalize=True)
+        cleaned_recall_as_numerical[iter_num] = recall_score(y_test, y_pred, average='macro')
 
         #check for reasonability
         print_statistics(data_features, labels)
@@ -139,7 +177,8 @@ if __name__ == "__main__":
     for i in range(NUM_OF_RUNS):
         print("---Run ", i+1, "---")
         print("Raw precision: ", raw_precision[i], "\tRaw accuracy: ", raw_accuracy[i], "\tRaw recall: ", raw_recall[i])
-        print("Cleaned precision: ", cleaned_precision[i], "\tCleaned accuracy: ", cleaned_accuracy[i], "\tCleaned recall: ", cleaned_recall[i])
+        print("Cleaned with ts precision: ", cleaned_precision_as_ts[i], "\tCleaned with ts accuracy: ", cleaned_accuracy_as_ts[i], "\tCleaned with ts recall: ", cleaned_recall_as_ts[i])
+        print("Cleaned with numerical precision: ", cleaned_precision_as_numerical[i], "\tCleaned with numerical accuracy: ", cleaned_accuracy_as_numerical[i], "\tCleaned with numerical recall: ", cleaned_recall_as_numerical[i])
         print("\n")
 
     plt.plot(raw_data[0,:])
