@@ -96,8 +96,8 @@ def generate_pattern_data_as_csv(length=100, numSamples=10, numClasses=3, percen
 def generate_pattern_array_as_csv(length=100, numSamples=10, numClasses=3, percentError=3, filename='sample_ts'):
     data = np.zeros((numSamples,length))
     labels = np.zeros(numSamples, dtype='int')
-    gremlin = 0;
-    gremlinCounter = 0;
+    gremlin = 0
+    gremlinCounter = 0
     if (numClasses > 5):
         print("Max number of classes is 5")
         numClasses = 5
@@ -147,20 +147,20 @@ def generate_pattern_data_as_csv(length=100, numSamples=10, numClasses=3, percen
 def generate_pattern_array_as_csv_with_indexes(length=100, numSamples=10, numClasses=3, percentError=3, filename='sample_ts'):
     data = np.zeros((numSamples,length))
     labels = np.zeros(numSamples, dtype='int')
-    gremlin = 0;
-    gremlinCounter = 0;
-    badIndexes = np.array();
+    gremlin = 0
+    gremlinCounter = 0
+    badIndexes = np.array([], dtype='int')
     if (numClasses > 5):
         print("Max number of classes is 5")
         numClasses = 5
     amplitude = [1, 2, 4, 8, 16]
-    print("Amplitude array: ", amplitude)
+    #print("Amplitude array: ", amplitude)
     pattern_length =  [2, 4, 8, 16, 32, 64]
-    print("Length array: ", pattern_length)
+    #print("Length array: ", pattern_length)
     var_pattern_length = [2, 4, 8, 16, 32]
-    print("Length variance array: ", var_pattern_length)
+    #print("Length variance array: ", var_pattern_length)
     var_amplitude = [1, 2, 4, 6, 8]
-    print("Amplitude variance array: ", var_amplitude)
+    #print("Amplitude variance array: ", var_amplitude)
     for i in range(numSamples):
         gremlin = random.randint(0, 100)
         label = random.randint(0, numClasses-1)
@@ -173,13 +173,13 @@ def generate_pattern_array_as_csv_with_indexes(length=100, numSamples=10, numCla
         if gremlin < percentError:
             label = (label + random.randint(1, numClasses-1)) % numClasses
             gremlinCounter += 1
-            np.append(badIndexes, [i])
+            badIndexes = np.append(badIndexes, [i])
         labels[i] = int(label)
 
     np.savetxt(filename+"_data.csv", data, delimiter=",")
     np.savetxt(filename+"_labels.csv", labels, delimiter=",", fmt="%d")
     data = get_features_for_set(data, num_samples=numSamples)
     np.savetxt(filename+"_features.csv", data, delimiter=",")
-    np.savetext(filename+"_swappedIndexes.csv", badIndexes, delimiter=",")
+    np.savetxt(filename+"_indexes.csv", badIndexes, delimiter=",", fmt="%d")
     print(gremlinCounter, " incorrect labels in data\n\n")
     return
