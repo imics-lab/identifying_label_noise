@@ -23,7 +23,7 @@ if __name__ == "__main__":
     num_precision = np.zeros((NUM_OF_RUNS, 3))
     num_recall = np.zeros((NUM_OF_RUNS, 3))
 
-    print("Running test on data set: ", DATASET_NUM)
+    print("Running precision/recall test on data set: ", DATASET_NUM)
 
     data_file = "src/datasets/accuracy_test"+str(DATASET_NUM)+"_data.csv"
     label_file = "src/datasets/accuracy_test"+str(DATASET_NUM)+"_labels.csv"

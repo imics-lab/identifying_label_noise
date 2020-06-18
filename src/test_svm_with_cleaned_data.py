@@ -3,7 +3,7 @@
 #Data: 22 May, 2020
 #This code will generate a numpy array of synthetic time series data, use the
 #labelfix preprocessor to flip mu percent (0.03) of the labels, and then test an
-#SVM trained with and without cleaned datagen
+#SVM trained with and without cleaned data
 
 import sklearn
 from sklearn import svm
@@ -77,7 +77,7 @@ if __name__ == "__main__":
 
     classifier = svm.LinearSVC(verbose=0, dual=False)
 
-    print("Running test on data set: ", DATASET_NUM)
+    print("Running SVM test on data set: ", DATASET_NUM)
     #read one of three data sets with 3 classes
     data_file = "src/datasets/svm_test"+str(DATASET_NUM)+"_data.csv"
     label_file = "src/datasets/svm_test"+str(DATASET_NUM)+"_labels.csv"
@@ -132,7 +132,6 @@ if __name__ == "__main__":
 
         #remove 2% worst fit samples using ts model
         print("Removing top 2% as ts data")
-        counter = 0
         rem_percent = int(NUM_SAMPLES * 0.02)
         index_list = np.array(res_ts["indices"][:rem_percent])
         index_list = np.sort(index_list)
