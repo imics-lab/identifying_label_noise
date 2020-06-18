@@ -77,17 +77,21 @@ if __name__ == "__main__":
 
     classifier = svm.LinearSVC(verbose=0, dual=False)
 
-    print("Running SVM test on data set: ", DATASET_NUM)
+    f = open("data_cleaning_experiments_results.txt", 'a')
+
+    f.write("test test")
+
+    f.write("Running SVM test on data set: " + str(DATASET_NUM) + "\n")
     #read one of three data sets with 3 classes
-    data_file = "src/datasets/svm_test"+str(DATASET_NUM)+"_data.csv"
-    label_file = "src/datasets/svm_test"+str(DATASET_NUM)+"_labels.csv"
-    feature_file = "src/datasets/svm_test"+str(DATASET_NUM)+"_features.csv"
+    data_file = "src/datasets/synthetic_set"+str(DATASET_NUM)+"_data.csv"
+    label_file = "src/datasets/synthetic_set"+str(DATASET_NUM)+"_labels.csv"
+    feature_file = "src/datasets/synthetic_set"+str(DATASET_NUM)+"_features.csv"
 
     raw_data = np.genfromtxt(data_file, delimiter=',')
     labels = np.genfromtxt(label_file, delimiter=',', dtype='int')
-    print(len(raw_data), " samples in dataset")
-    print(len(labels), " labels in dataset")
-    print(max(labels)+1, " distinct labels")
+    f.write(str(len(raw_data)) + " samples in dataset\n")
+    f.write(str(len(labels)) + " labels in dataset\n")
+    f.write(str(max(labels)+1) + " distinct labels\n")
     NUM_SAMPLES = len(raw_data)
     #extract features
     #data_features = get_features_for_set(raw_data, num_samples=NUM_SAMPLES)
@@ -98,8 +102,10 @@ if __name__ == "__main__":
     raw_data, labels = preprocess_x_y_and_shuffle(raw_data, labels)
 
 
+
+
     for iter_num in range(NUM_OF_RUNS):
-        print("--------------Run Number: ", iter_num+1, "--------------------")
+        f.write("--------------Run Number: " + str(iter_num+1) + "--------------------\n")
 
         cleaned_features = data_features
         cleaned_labels = labels
@@ -135,7 +141,7 @@ if __name__ == "__main__":
         rem_percent = int(NUM_SAMPLES * 0.02)
         index_list = np.array(res_ts["indices"][:rem_percent])
         index_list = np.sort(index_list)
-        print("Indexes to remove: ", index_list)
+        f.write("Indexes to remove from ts analysis: " +  str(index_list)+"\n")
         cleaned_features = np.delete(cleaned_features, index_list, 0)
         cleaned_labels = np.delete(cleaned_labels, index_list)
 
@@ -159,7 +165,7 @@ if __name__ == "__main__":
         rem_percent = int(NUM_SAMPLES * 0.02)
         index_list = np.array(res_numercical["indices"][:rem_percent])
         index_list = np.sort(index_list)
-        print("Indexes to remove: ", index_list)
+        f.write("Indexes to remove from numerical analysis: " + str(index_list)+"\n")
         cleaned_features = np.delete(cleaned_features, index_list, 0)
         cleaned_labels = np.delete(cleaned_labels, index_list)
 
@@ -177,13 +183,10 @@ if __name__ == "__main__":
         #clean up loose ends in memory
         gc.collect()
 
-    print("\n\n--------Results----------------")
+    f.write("\n\n--------Results----------------\n")
     for i in range(NUM_OF_RUNS):
-        print("---Run ", i+1, "---")
-        print("Raw precision: ", raw_precision[i], "\tRaw accuracy: ", raw_accuracy[i], "\tRaw recall: ", raw_recall[i])
-        print("Cleaned with ts precision: ", cleaned_precision_as_ts[i], "\tCleaned with ts accuracy: ", cleaned_accuracy_as_ts[i], "\tCleaned with ts recall: ", cleaned_recall_as_ts[i])
-        print("Cleaned with numerical precision: ", cleaned_precision_as_numerical[i], "\tCleaned with numerical accuracy: ", cleaned_accuracy_as_numerical[i], "\tCleaned with numerical recall: ", cleaned_recall_as_numerical[i])
-        print("\n")
-
-    plt.plot(raw_data[0,:])
-    plt.show()
+        f.write("---Run " + str(i+1) + "---")
+        f.write("Raw precision: " + str(raw_precision[i]) + "\tRaw accuracy: " + str(raw_accuracy[i]) + "\tRaw recall: " + str(raw_recall[i])+"\n")
+        f.write("Cleaned with ts precision: " + str(cleaned_precision_as_ts[i]) + "\tCleaned with ts accuracy: " + str(cleaned_accuracy_as_ts[i]) + "\tCleaned with ts recall: " + str(cleaned_recall_as_ts[i])+"\n")
+        f.write("Cleaned with numerical precision: " + str(cleaned_precision_as_numerical[i]) + "\tCleaned with numerical accuracy: " + str(cleaned_accuracy_as_numerical[i]) + "\tCleaned with numerical recall: " + str(cleaned_recall_as_numerical[i])+"\n")
+        f.write("\n")
