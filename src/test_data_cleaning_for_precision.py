@@ -8,10 +8,15 @@
 from sklearn.metrics import accuracy_score, precision_score, recall_score
 import numpy as np
 from labelfix import check_dataset, preprocess_x_y_and_shuffle, print_statistics
+import sys
 
 if __name__ == "__main__":
-    NUM_OF_RUNS = 3
-    DATASET_NUM = 1
+    if len(sys.argv) < 3:
+        NUM_OF_RUNS = 5
+        DATASET_NUM = 2
+    else:
+        NUM_OF_RUNS = int(sys.argv[1])
+        DATASET_NUM = int(sys.argv[2])
 
     ts_precision = np.zeros((NUM_OF_RUNS, 3))
     ts_recall = np.zeros((NUM_OF_RUNS, 3))
@@ -49,7 +54,7 @@ if __name__ == "__main__":
             "input_dim": data_features.shape[1],
             "output_dim": max(labels)+1,
             "num_hidden": 3,
-            "size_hidden": 50,
+            "size_hidden": 100,
             "dropout": 0.1,
             "epochs": 400,
             "learn_rate": 1e-2,

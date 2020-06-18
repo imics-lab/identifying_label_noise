@@ -21,6 +21,7 @@ from tsfresh import extract_features, select_features, extract_relevant_features
 from tsfresh.utilities.dataframe_functions import impute
 from tsfresh.feature_extraction import EfficientFCParameters
 import matplotlib.pyplot as plt
+import sys
 
 def cast_array_to_dataframe(X):
     numSamples = len(X)
@@ -57,8 +58,12 @@ def get_best_features(X, y):
     return sel
 
 if __name__ == "__main__":
-    NUM_OF_RUNS = 5
-    DATASET_NUM = 3
+    if len(sys.argv) < 3:
+        NUM_OF_RUNS = 5
+        DATASET_NUM = 2
+    else:
+        NUM_OF_RUNS = int(sys.argv[1])
+        DATASET_NUM = int(sys.argv[2])
 
     raw_precision = np.zeros((NUM_OF_RUNS))
     cleaned_precision_as_ts = np.zeros((NUM_OF_RUNS))
