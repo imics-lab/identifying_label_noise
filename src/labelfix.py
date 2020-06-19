@@ -26,9 +26,6 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.utils import compute_class_weight
 from tensorflow.python.client import device_lib
-
-#from src.models.cnn_keras import get_model_cnn
-#from src.models.dense_net_keras import get_model_dense
 from models import cnn_keras  as ck
 from models import dense_net_keras as dnk
 from models import cnn_1d_keras as c1k
@@ -37,6 +34,8 @@ warnings.filterwarnings("ignore", message="F-score is ill-defined and being set 
 warnings.filterwarnings("ignore", message="Data with input dtype int64 was converted to float64 by MinMaxScaler.")
 
 gpu_avail = np.any(["gpu" in device_lib.list_local_devices()[i].name for i in range(len(device_lib.list_local_devices()))])
+
+TS_THRESHOLD = 150
 
 
 def _get_indices(pred, y):
@@ -114,7 +113,7 @@ def is_numerical(X):
     :param X:       np array, Data set to check
     :return:        bool, True if data is probably numerical, False otherwise
     """
-    is_num = X.ndim == 2 and len(X[0]) <= 200
+    is_num = X.ndim == 2 and len(X[0]) <= TS_THRESHOLD
     if is_num:
         print("Assuming numerical input since data has dimensionality {}.".format(X.ndim))
     return is_num
@@ -125,7 +124,7 @@ def is_timeSeries(X):
     :param X:       np array, Data set to check
     :return:        bool, True if X is probably time series
     """
-    is_num = X.ndim == 2 and len(X[0]) > 200
+    is_num = X.ndim == 2 and len(X[0]) > TS_THRESHOLD
     if is_num:
         print("Assuming time series input since data has dimensionality {}.".format(X.ndim))
     return is_num
@@ -136,7 +135,6 @@ def is_textual(X):
     :param X:       np array, Data set to check
     :return:        bool, True if data is probably textual, False otherwise
     """
-    print("checking data for text")
     unique_types = np.unique([str(type(X[i])) for i in range(X.shape[0])])
     is_txt = (X.ndim == 1 and np.all(["str" in unique_types[i] for i in range(unique_types.shape[0])]))
     if is_txt:
@@ -374,7 +372,6 @@ def check_dataset(X, y, hyperparams=None):
         # Assert incoming data format
         y = y.squeeze()
         assert y.ndim == 1, "ONE HOT FOR KERAS! Text or Numeric requires numerical labels!"
-        print("checking time series data")
 
         # Set up early stopping
         do_val_split = X.shape[0] > 1000
@@ -387,10 +384,8 @@ def check_dataset(X, y, hyperparams=None):
 
         y = to_categorical(y)
 
-        print ("building model with input size ", X[0].shape[0], " and output size ",  y.shape[1:][0])
         nn = c1k.get_model_1d_cnn(shape_x=X[0].shape[0], shape_y=y.shape[1:][0])
         X = np.resize(X, (X.shape[0], X.shape[1]))
-        print('Input samples: ', len(X), " and input targets: ", len(y))
         #nn.fit(X, y, epochs=100, verbose=0, callbacks=[es], class_weight=class_weight, validation_split=val_split_size)
         nn.fit(X, y, epochs=9, verbose=0, callbacks=[es], validation_split=val_split_size, batch_size=10)
         pred = nn.predict_proba(X)  # predict test set
