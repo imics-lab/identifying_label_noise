@@ -14,9 +14,13 @@ if __name__ == "__main__":
     if len(sys.argv) < 3:
         NUM_OF_RUNS = 5
         DATASET_NUM = 2
+        NAME = "synthetic_set"
+    elif len(sys.argv) < 4:
+        NAME = "synthetic_set"
     else:
         NUM_OF_RUNS = int(sys.argv[1])
         DATASET_NUM = int(sys.argv[2])
+        NAME = sys.argv[3]
 
     f = open("data_cleaning_experiments_results.txt", 'a')
 
@@ -27,10 +31,10 @@ if __name__ == "__main__":
 
     f.write("Running precision/recall test on data set: "+ str(DATASET_NUM)+"\n")
 
-    data_file = "src/datasets/synthetic_set"+str(DATASET_NUM)+"_data.csv"
-    label_file = "src/datasets/synthetic_set"+str(DATASET_NUM)+"_labels.csv"
-    feature_file = "src/datasets/synthetic_set"+str(DATASET_NUM)+"_features.csv"
-    index_file = "src/datasets/synthetic_set"+str(DATASET_NUM)+"_indexes.csv"
+    data_file = "src/datasets/"+NAME+str(DATASET_NUM)+"_data.csv"
+    label_file = "src/datasets/"+NAME+str(DATASET_NUM)+"_labels.csv"
+    feature_file = "src/datasets/"+NAME+str(DATASET_NUM)+"_features.csv"
+    index_file = "src/datasets/"+NAME+str(DATASET_NUM)+"_indexes.csv"
 
     raw_data = np.genfromtxt(data_file, delimiter=',')
     labels = np.genfromtxt(label_file, delimiter=',', dtype='int')
