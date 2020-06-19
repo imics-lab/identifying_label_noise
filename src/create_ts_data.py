@@ -14,3 +14,6 @@ if __name__ == "__main__":
     f.write("Set one is 1000 sample of length 500 in 5 classes\n")
     f.write("Set one is 5000 sample of length 1000 in 2 classes\n")
     f.write("Set one is 5000 sample of length 1000 in 5 classes\n")
+
+    f.flush()
+    f.close()

@@ -25,7 +25,7 @@ if __name__ == "__main__":
     num_precision = np.zeros((NUM_OF_RUNS, 3))
     num_recall = np.zeros((NUM_OF_RUNS, 3))
 
-    f.write("Running precision/recall test on data set: ", DATASET_NUM)
+    f.write("Running precision/recall test on data set: "+ str(DATASET_NUM)+"\n")
 
     data_file = "src/datasets/accuracy_test"+str(DATASET_NUM)+"_data.csv"
     label_file = "src/datasets/accuracy_test"+str(DATASET_NUM)+"_labels.csv"
@@ -43,9 +43,9 @@ if __name__ == "__main__":
     for index in bad_indexes :
         y_true[index] = 1
 
-    f.write(len(raw_data), " samples in dataset")
-    f.write(len(labels), " labels in dataset")
-    f.write(NUM_CLASSES, " distinct labels")
+    f.write(str(len(raw_data))+ " samples in dataset\n")
+    f.write(str(len(labels))+ " labels in dataset\n")
+    f.write(str(NUM_CLASSES)+ " distinct labels\n")
 
     preprocess_x_y_and_shuffle(raw_data, labels)
 
@@ -105,20 +105,23 @@ if __name__ == "__main__":
         num_precision[i, 2] = precision_score(y_true, y_pred_num, average='macro')
         num_recall[i, 2] = recall_score(y_true, y_pred_num, average='macro')
 
-    f.write("### Results on Raw Data###")
-    f.write("\t\tPrec\t\t\tRecall")
+    f.write("### Results on Raw Data###\n")
+    f.write("\t\tPrec\t\t\tRecall\n")
     for i in range(NUM_OF_RUNS):
-        f.write("0.01\t", ts_precision[i, 0], "\t", ts_recall[i, 0])
+        f.write("0.01\t"+ str(ts_precision[i, 0])+ "\t"+ str(ts_recall[i, 0])+"\n")
     for i in range(NUM_OF_RUNS):
-        f.write("0.02\t", ts_precision[i, 1], "\t", ts_recall[i, 1])
+        f.write("0.02\t"+ str(ts_precision[i, 1])+ "\t"+ str(ts_recall[i, 1])+"\n")
     for i in range(NUM_OF_RUNS):
-        f.write("0.03\t", ts_precision[i, 2], "\t", ts_recall[i, 2])
+        f.write("0.03\t"+ str(ts_precision[i, 2])+ "\t"+ str(ts_recall[i, 2])+"\n")
 
     f.write("\n\n### Results on Features###")
-    f.write("\t\tPrec\t\t\tRecall")
+    f.write("\t\tPrec\t\t\tRecall\n")
     for i in range(NUM_OF_RUNS):
-        f.write("0.01\t", num_precision[i, 0], "\t", num_recall[i, 0])
+        f.write("0.01\t"+ str(num_precision[i, 0])+ "\t"+ str(num_recall[i, 0])+"\n")
     for i in range(NUM_OF_RUNS):
-        f.write("0.02\t", num_precision[i, 1], "\t", num_recall[i, 1])
+        f.write("0.02\t"+ str(num_precision[i, 1])+ "\t"+ str(num_recall[i, 1])+"\n")
     for i in range(NUM_OF_RUNS):
-        f.write("0.03\t", num_precision[i, 2], "\t", num_recall[i, 2])
+        f.write("0.03\t"+ str(num_precision[i, 2])+ "\t"+ str(num_recall[i, 2])+"\n")
+
+    f.flush()
+    f.close()

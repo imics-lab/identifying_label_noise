@@ -33,7 +33,7 @@ if __name__ == "__main__":
 
     f = open("data_cleaning_experiments_results.txt", 'a')
 
-    f.write("Running CNN test on data set: ", DATASET_NUM)
+    f.write("Running CNN test on data set: " + str(DATASET_NUM)+"\n")
 
     data_file = "src/datasets/synthetic_set"+str(DATASET_NUM)+"_data.csv"
     label_file = "src/datasets/synthetic_set"+str(DATASET_NUM)+"_labels.csv"
@@ -51,9 +51,9 @@ if __name__ == "__main__":
     NUM_SAMPLES = len(raw_data)
 
     raw_data, labels = preprocess_x_y_and_shuffle(raw_data, labels)
-    f.write(len(raw_data), " samples in dataset")
-    f.write(len(labels), " labels in dataset")
-    f.write(NUM_CLASSES, " distinct labels")
+    f.write(str(len(raw_data))+ " samples in dataset\n")
+    f.write(str(len(labels))+ " labels in dataset\n")
+    f.write(str(NUM_CLASSES)+ " distinct labels\n")
 
     classifier = Sequential([
         Input(shape=(len(raw_data[0]))),
@@ -71,7 +71,7 @@ if __name__ == "__main__":
     classifier.summary()
 
     for iter_num in range(NUM_OF_RUNS):
-        f.write("--------------Run Number: ", iter_num+1, "--------------------")
+        f.write("--------------Run Number: "+ str(iter_num+1)+ "--------------------\n")
 
         cleaned_data = raw_data
         cleaned_labels = labels
@@ -92,7 +92,7 @@ if __name__ == "__main__":
         rem_percent = int(NUM_SAMPLES * 0.02)
         index_list = np.array(res_ts["indices"][:rem_percent])
         index_list = np.sort(index_list)
-        f.write("Indexes to remove: ", index_list)
+        f.write("Indexes to remove: " + str(index_list) +"\n")
         cleaned_data = np.delete(cleaned_data, index_list, 0)
         cleaned_labels = np.delete(cleaned_labels, index_list)
 
@@ -106,9 +106,12 @@ if __name__ == "__main__":
         cleaned_accuracy[iter_num] = accuracy_score(y_test, y_pred, normalize=True)
         cleaned_recall[iter_num] = recall_score(y_test, y_pred, average='macro')
 
-    f.write("\n\n--------Results----------------")
+    f.write("\n\n--------Results----------------\n")
     for i in range(NUM_OF_RUNS):
-        f.write("---Run ", i+1, "---")
-        f.write("Raw precision: ", raw_precision[i], "\tRaw accuracy: ", raw_accuracy[i], "\tRaw recall: ", raw_recall[i])
-        f.write("Cleaned precision: ", cleaned_precision[i], "\tCleaned with ts accuracy: ", cleaned_accuracy[i], "\tCleaned with ts recall: ", cleaned_recall[i])
+        f.write("---Run "+ str(i+1)+ "---\n")
+        f.write("Raw precision: "+ str(raw_precision[i])+ "\tRaw accuracy: "+ str(raw_accuracy[i])+ "\tRaw recall: "+ str(raw_recall[i]) + "\n")
+        f.write("Cleaned precision: "+ str(cleaned_precision[i])+ "\tCleaned with ts accuracy: "+ str(cleaned_accuracy[i])+ "\tCleaned with ts recall: "+ str(cleaned_recall[i])+"\n")
         f.write("\n")
+
+    f.flush()
+    f.close()

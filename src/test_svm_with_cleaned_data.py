@@ -79,8 +79,6 @@ if __name__ == "__main__":
 
     f = open("data_cleaning_experiments_results.txt", 'a')
 
-    f.write("test test")
-
     f.write("Running SVM test on data set: " + str(DATASET_NUM) + "\n")
     #read one of three data sets with 3 classes
     data_file = "src/datasets/synthetic_set"+str(DATASET_NUM)+"_data.csv"
@@ -185,8 +183,11 @@ if __name__ == "__main__":
 
     f.write("\n\n--------Results----------------\n")
     for i in range(NUM_OF_RUNS):
-        f.write("---Run " + str(i+1) + "---")
+        f.write("---Run " + str(i+1) + "---\n")
         f.write("Raw precision: " + str(raw_precision[i]) + "\tRaw accuracy: " + str(raw_accuracy[i]) + "\tRaw recall: " + str(raw_recall[i])+"\n")
         f.write("Cleaned with ts precision: " + str(cleaned_precision_as_ts[i]) + "\tCleaned with ts accuracy: " + str(cleaned_accuracy_as_ts[i]) + "\tCleaned with ts recall: " + str(cleaned_recall_as_ts[i])+"\n")
         f.write("Cleaned with numerical precision: " + str(cleaned_precision_as_numerical[i]) + "\tCleaned with numerical accuracy: " + str(cleaned_accuracy_as_numerical[i]) + "\tCleaned with numerical recall: " + str(cleaned_recall_as_numerical[i])+"\n")
         f.write("\n")
+
+    f.flush()
+    f.close()
