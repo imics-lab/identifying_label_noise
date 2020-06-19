@@ -27,10 +27,10 @@ if __name__ == "__main__":
 
     f.write("Running precision/recall test on data set: "+ str(DATASET_NUM)+"\n")
 
-    data_file = "src/datasets/accuracy_test"+str(DATASET_NUM)+"_data.csv"
-    label_file = "src/datasets/accuracy_test"+str(DATASET_NUM)+"_labels.csv"
-    feature_file = "src/datasets/accuracy_test"+str(DATASET_NUM)+"_features.csv"
-    index_file = "src/datasets/accuracy_test"+str(DATASET_NUM)+"_indexes.csv"
+    data_file = "src/datasets/synthetic_set"+str(DATASET_NUM)+"_data.csv"
+    label_file = "src/datasets/synthetic_set"+str(DATASET_NUM)+"_labels.csv"
+    feature_file = "src/datasets/synthetic_set"+str(DATASET_NUM)+"_features.csv"
+    index_file = "src/datasets/synthetic_set"+str(DATASET_NUM)+"_indexes.csv"
 
     raw_data = np.genfromtxt(data_file, delimiter=',')
     labels = np.genfromtxt(label_file, delimiter=',', dtype='int')

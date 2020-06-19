@@ -62,3 +62,11 @@ def visualize_image(image_data, image_labels, label_names, indices, batch_to_plo
         plt.savefig(path)
         print("Figure saved to {}".format(path))
     plt.show()
+
+def visualize_timeseries (ts_data, timestamps=None, plot_label=""):
+    if not timestamps:
+        plt.plot(range(len(ts_data)), ts_data, '-b', label=plot_label, scaley=True)
+    else:
+        plt.plot(timestamps, ts_data, '-b',  label=plot_label, scaley=True)
+    plt.legend(loc='best')
+    plt.show()
