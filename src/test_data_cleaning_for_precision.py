@@ -29,7 +29,7 @@ if __name__ == "__main__":
     num_precision = np.zeros((NUM_OF_RUNS, 3))
     num_recall = np.zeros((NUM_OF_RUNS, 3))
 
-    f.write("Running precision/recall test on data set: "+ str(DATASET_NUM)+"\n")
+    f.write("Running precision/recall test on data set " + NAME + str(DATASET_NUM)+"\n")
 
     data_file = "src/datasets/"+NAME+str(DATASET_NUM)+"_data.csv"
     label_file = "src/datasets/"+NAME+str(DATASET_NUM)+"_labels.csv"
@@ -118,7 +118,7 @@ if __name__ == "__main__":
     for i in range(NUM_OF_RUNS):
         f.write("0.03\t"+ str(ts_precision[i, 2])+ "\t"+ str(ts_recall[i, 2])+"\n")
 
-    f.write("\n\n### Results on Features###")
+    f.write("\n\n### Results on Features###\n")
     f.write("\t\tPrec\t\t\tRecall\n")
     for i in range(NUM_OF_RUNS):
         f.write("0.01\t"+ str(num_precision[i, 0])+ "\t"+ str(num_recall[i, 0])+"\n")
