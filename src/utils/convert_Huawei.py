@@ -1,7 +1,7 @@
 #Author: Gentry Atkinson
 #Organization: Texas University
-#Data: 17 June, 2020
-#This code will read the UniMib mat files into CSV and rename them to fit the
+#Data: 22 June, 2020
+#This code will read the Huawei txt files into CSV and rename them to fit the
 #conventions being used in the 3 test files
 
 import numpy as np
@@ -69,19 +69,20 @@ if __name__ == "__main__":
     labels = np.zeros(len(labels_array), dtype='int')
     labels_with_noise = np.zeros(len(labels_array), dtype='int')
     gremlinCounter = 0
-    NUM_CLASSES = max(labels)
+    NUM_CLASSES = np.max(labels)
     badIndexes = np.array([], dtype='int')
     for i in range(len(labels)):
-        labels[i] = np.floor(np.mean(labels_array[i]))-1
+        labels[i] = (np.rint(np.mean(labels_array[i])))-1
         gremlin = random.randint(0,100)
         if gremlin < 3:
-            labels[i] = (labels[i]+1)%NUM_CLASSES
+            labels_with_noise[i] = (labels[i]+1)%NUM_CLASSES
             badIndexes = np.append(badIndexes, [i])
             gremlinCounter += 1
         else:
             labels_with_noise[i] = labels[i]
 
-    np.savetxt("src/datasets/huawei_with_noise1_labels.csv", labels, delimiter=",", fmt="%d")
+    np.savetxt("src/datasets/huawei1_labels.csv", labels, delimiter=",", fmt="%d")
+    np.savetxt("src/datasets/huawei_with_noise1_labels.csv", labels_with_noise, delimiter=",", fmt="%d")
     np.savetxt("src/datasets/huawei_with_noise1_indexes.csv", badIndexes, delimiter=",", fmt="%d")
 
     print(gremlinCounter, " bad labels")

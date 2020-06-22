@@ -7,18 +7,29 @@
 #measure the effectiveness of extended labelfix on timeseries data.
 
 #python3 src/create_ts_data.py
+#python3 src/utils/convert_Huawei.py
+#python3 src/utils/convert_UniMib.py
 
-python3 src/test_data_cleaning_for_precision.py 5 1
-python3 src/test_data_cleaning_for_precision.py 5 2
-python3 src/test_data_cleaning_for_precision.py 5 3
-python3 src/test_data_cleaning_for_precision.py 5 4
+python3 src/test_data_cleaning_for_precision.py 5 1 synthetic_set
+python3 src/test_data_cleaning_for_precision.py 5 2 synthetic_set
+python3 src/test_data_cleaning_for_precision.py 5 3 synthetic_set
+python3 src/test_data_cleaning_for_precision.py 5 4 synthetic_set
+python3 src/test_data_cleaning_for_precision.py 5 1 huawei
+python3 src/test_data_cleaning_for_precision.py 5 1 unimib
+python3 src/test_data_cleaning_for_precision.py 5 2 unimib
 
-python3 src/test_svm_with_cleaned_data.py 5 1
-python3 src/test_svm_with_cleaned_data.py 5 2
-python3 src/test_svm_with_cleaned_data.py 5 3
-python3 src/test_svm_with_cleaned_data.py 5 4
+python3 src/test_svm_with_cleaned_data.py 5 1 synthetic_set
+python3 src/test_svm_with_cleaned_data.py 5 2 synthetic_set
+python3 src/test_svm_with_cleaned_data.py 5 3 synthetic_set
+python3 src/test_svm_with_cleaned_data.py 5 4 synthetic_set
+python3 src/test_svm_with_cleaned_data.py 5 1 huawei
+python3 src/test_svm_with_cleaned_data.py 5 1 unimib
+python3 src/test_svm_with_cleaned_data.py 5 2 unimib
 
-python3 src/test_cnn_with_cleaned_data.py 5 1
-python3 src/test_cnn_with_cleaned_data.py 5 2
-python3 src/test_cnn_with_cleaned_data.py 5 3
-python3 src/test_cnn_with_cleaned_data.py 5 4
+python3 src/test_cnn_with_cleaned_data.py 5 1 synthetic_set
+python3 src/test_cnn_with_cleaned_data.py 5 2 synthetic_set
+python3 src/test_cnn_with_cleaned_data.py 5 3 synthetic_set
+python3 src/test_cnn_with_cleaned_data.py 5 4 synthetic_set
+python3 src/test_cnn_with_cleaned_data.py 5 1 huawei
+python3 src/test_cnn_with_cleaned_data.py 5 1 unimib
+python3 src/test_cnn_with_cleaned_data.py 5 2 unimib
