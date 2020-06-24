@@ -9,6 +9,7 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score
 import numpy as np
 from labelfix import check_dataset, preprocess_x_y_and_shuffle, print_statistics
 import sys
+import gc
 
 if __name__ == "__main__":
     if len(sys.argv) < 3:
@@ -108,6 +109,8 @@ if __name__ == "__main__":
         ts_recall[i, 2] = recall_score(y_true, y_pred_ts, average='macro')
         num_precision[i, 2] = precision_score(y_true, y_pred_num, average='macro')
         num_recall[i, 2] = recall_score(y_true, y_pred_num, average='macro')
+
+        gc.collect()
 
     f.write("### Results on Raw Data###\n")
     f.write("\t\tPrec\t\t\tRecall\n")

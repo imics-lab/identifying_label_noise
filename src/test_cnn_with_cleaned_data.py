@@ -6,6 +6,7 @@
 #CNN trained with and without cleaned data
 
 import sys
+import gc
 import numpy as np
 from sklearn.metrics import accuracy_score, precision_score, recall_score
 from sklearn.model_selection import train_test_split
@@ -108,6 +109,8 @@ if __name__ == "__main__":
         cleaned_precision[iter_num] = precision_score(y_test, y_pred, average='macro')
         cleaned_accuracy[iter_num] = accuracy_score(y_test, y_pred, normalize=True)
         cleaned_recall[iter_num] = recall_score(y_test, y_pred, average='macro')
+
+        gc.collect()
 
     f.write("\n\n--------Results----------------\n")
     for i in range(NUM_OF_RUNS):
