@@ -13,13 +13,13 @@ from ts_feature_toolkit import get_features_for_set
 if __name__ == "__main__":
     twoClass_X = loadmat('src/datasets/UniMiB-SHAR/data/two_classes_data.mat')['two_classes_data']
     twoClass_y = loadmat('src/datasets/UniMiB-SHAR/data/two_classes_labels.mat')['two_classes_labels'][:,0]
-    #twoClass_feat = get_features_for_set(twoClass_X, num_samples=len(twoClass_X))
+    twoClass_feat = get_features_for_set(twoClass_X, num_samples=len(twoClass_X))
 
     twoClass_y = twoClass_y - 1
 
     np.savetxt("src/datasets/unimib1_data.csv", twoClass_X, delimiter=",")
     np.savetxt("src/datasets/unimib1_labels.csv", twoClass_y, delimiter=",", fmt="%d")
-    #np.savetxt("src/datasets/unimib1_features.csv", twoClass_feat, delimiter=",")
+    np.savetxt("src/datasets/unimib1_features.csv", twoClass_feat, delimiter=",")
 
     gremlinCounter = 0
     badIndexes = np.array([], dtype='int')
@@ -32,7 +32,7 @@ if __name__ == "__main__":
     print (gremlinCounter, " bad indexes in two class data")
 
     np.savetxt("src/datasets/unimib_with_noise1_labels.csv", twoClass_y, delimiter=",", fmt="%d")
-    #np.savetxt("src/datasets/unimib_with_noise1_features.csv", twoClass_feat, delimiter=",")
+    np.savetxt("src/datasets/unimib_with_noise1_features.csv", twoClass_feat, delimiter=",")
     np.savetxt("src/datasets/unimib_with_noise1_data.csv", twoClass_X, delimiter=",")
     np.savetxt("src/datasets/unimib_with_noise1_indexes.csv", badIndexes, delimiter=",", fmt="%d")
 
