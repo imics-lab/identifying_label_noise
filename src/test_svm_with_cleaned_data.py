@@ -109,12 +109,18 @@ if __name__ == "__main__":
     for iter_num in range(NUM_OF_RUNS):
         f.write("--------------Run Number: " + str(iter_num+1) + "--------------------\n")
 
-        cleaned_features = data_features
-        cleaned_labels = labels
+        print("Classes represented in ts data: ", res_ts["Classes"])
+        print("Classes represented in numerical data: ", res_numercical["Classes"])
+
+        #train and test on raw features
+        X_raw, X_test, y_train, y_test = train_test_split(raw_data, labels, test_size=0.2, shuffle=True)
+        X_train = get_features_for_set(X_raw, len(X_raw))
+        cleaned_features = X_train
+        cleaned_labels = y_train
 
         #generate list of most poorly fit indexes
-        res_ts = check_dataset(raw_data, labels)
-        res_numercical = check_dataset(data_features, labels, hyperparams={
+        res_ts = check_dataset(X_raw, y_train)
+        res_numercical = check_dataset(X_train, y_train, hyperparams={
             "input_dim": data_features.shape[1],
             "output_dim": max(labels)+1,
             "num_hidden": 3,
@@ -124,11 +130,8 @@ if __name__ == "__main__":
             "learn_rate": 1e-2,
             "activation": "relu"
         })
-        print("Classes represented in ts data: ", res_ts["Classes"])
-        print("Classes represented in numerical data: ", res_numercical["Classes"])
 
-        #train and test on raw features
-        X_train, X_test, y_train, y_test = train_test_split(data_features, labels, test_size=0.2, shuffle=False)
+
         classifier.fit(X_train, y_train)
         y_pred = classifier.predict(X_test)
         raw_precision[iter_num] = precision_score(y_test, y_pred, average='macro')
@@ -148,8 +151,8 @@ if __name__ == "__main__":
         cleaned_labels = np.delete(cleaned_labels, index_list)
 
         #train and test on cleaned data
-        X_train, X_test, y_train, y_test = train_test_split(cleaned_features, cleaned_labels, test_size=0.2, shuffle=False)
-        classifier.fit(X_train, y_train)
+        #X_train, X_test, y_train, y_test = train_test_split(cleaned_features, cleaned_labels, test_size=0.2, shuffle=False)
+        classifier.fit(cleaned_features, cleaned_labels)
         y_pred = classifier.predict(X_test)
         cleaned_precision_as_ts[iter_num] = precision_score(y_test, y_pred, average='macro')
         cleaned_accuracy_as_ts[iter_num] = accuracy_score(y_test, y_pred, normalize=True)
@@ -158,12 +161,11 @@ if __name__ == "__main__":
         #check for reasonability
         print_statistics(data_features, labels)
 
-        cleaned_features = data_features
-        cleaned_labels = labels
+        cleaned_features = X_train
+        cleaned_labels = y_train
 
         #remove 2% worst fit samples using numerical model
         print("Removing top 2% as numerical data")
-        counter = 0
         rem_percent = int(NUM_SAMPLES * 0.02)
         index_list = np.array(res_numercical["indices"][:rem_percent])
         index_list = np.sort(index_list)
@@ -172,8 +174,8 @@ if __name__ == "__main__":
         cleaned_labels = np.delete(cleaned_labels, index_list)
 
         #train and test on cleaned data
-        X_train, X_test, y_train, y_test = train_test_split(cleaned_features, cleaned_labels, test_size=0.2, shuffle=False)
-        classifier.fit(X_train, y_train)
+        #X_train, X_test, y_train, y_test = train_test_split(cleaned_features, cleaned_labels, test_size=0.2, shuffle=False)
+        classifier.fit(cleaned_features, cleaned_labels)
         y_pred = classifier.predict(X_test)
         cleaned_precision_as_numerical[iter_num] = precision_score(y_test, y_pred, average='macro')
         cleaned_accuracy_as_numerical[iter_num] = accuracy_score(y_test, y_pred, normalize=True)

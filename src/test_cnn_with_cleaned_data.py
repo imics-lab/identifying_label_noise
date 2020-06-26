@@ -77,13 +77,8 @@ if __name__ == "__main__":
     for iter_num in range(NUM_OF_RUNS):
         f.write("--------------Run Number: "+ str(iter_num+1)+ "--------------------\n")
 
-        cleaned_data = raw_data
-        cleaned_labels = labels
-
-        res_ts = check_dataset(raw_data, labels)
-
         #train and test on raw features
-        X_train, X_test, y_train, y_test = train_test_split(raw_data, labels, test_size=0.2, shuffle=False)
+        X_train, X_test, y_train, y_test = train_test_split(raw_data, labels, test_size=0.2, shuffle=True)
         y_train = to_categorical(y_train)
         classifier.fit(X_train, y_train, epochs=7, verbose=0)
         y_pred = classifier.predict(X_test)
@@ -91,6 +86,10 @@ if __name__ == "__main__":
         raw_precision[iter_num] = precision_score(y_test, y_pred, average='macro')
         raw_accuracy[iter_num] = accuracy_score(y_test, y_pred, normalize=True)
         raw_recall[iter_num] = recall_score(y_test, y_pred, average='macro')
+
+        res_ts = check_dataset(X_train, y_train)
+        cleaned_data = X_train
+        cleaned_labels = y_train
 
         print("Removing top 2% as ts data")
         rem_percent = int(NUM_SAMPLES * 0.02)
@@ -101,9 +100,9 @@ if __name__ == "__main__":
         cleaned_labels = np.delete(cleaned_labels, index_list)
 
         #train and test on cleaned data
-        X_train, X_test, y_train, y_test = train_test_split(cleaned_data, cleaned_labels, test_size=0.2, shuffle=False)
-        y_train = to_categorical(y_train)
-        classifier.fit(X_train, y_train, epochs=7, verbose=0)
+        #X_train, X_test, y_train, y_test = train_test_split(cleaned_data, cleaned_labels, test_size=0.2, shuffle=False)
+        #y_train = to_categorical(y_train)
+        classifier.fit(cleaned_data, cleaned_labels, epochs=15, verbose=0)
         y_pred = classifier.predict(X_test)
         y_pred = decode_from_one_hot(y_pred)
         cleaned_precision[iter_num] = precision_score(y_test, y_pred, average='macro')
