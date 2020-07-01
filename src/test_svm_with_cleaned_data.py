@@ -178,6 +178,7 @@ if __name__ == "__main__":
             classifier.fit(cleaned_features, cleaned_labels)
         else:
             X_train, X_test, y_train, y_test = train_test_split(cleaned_features, cleaned_labels, test_size=0.2, shuffle=True)
+            classifier.fit(X_train, y_train)
 
         y_pred = classifier.predict(X_test)
         cleaned_precision_as_ts[iter_num] = precision_score(y_test, y_pred, average='macro')
@@ -204,11 +205,11 @@ if __name__ == "__main__":
         cleaned_labels = np.delete(cleaned_labels, index_list)
 
         #train and test on cleaned data
-        #X_train, X_test, y_train, y_test = train_test_split(cleaned_features, cleaned_labels, test_size=0.2, shuffle=False)
         if ONLY_CLEAN_TRAIN:
             classifier.fit(cleaned_features, cleaned_labels)
         else:
             X_train, X_test, y_train, y_test = train_test_split(cleaned_features, cleaned_labels, test_size=0.2, shuffle=True)
+            classifier.fit(X_train, y_train)
 
         y_pred = classifier.predict(X_test)
         cleaned_precision_as_numerical[iter_num] = precision_score(y_test, y_pred, average='macro')

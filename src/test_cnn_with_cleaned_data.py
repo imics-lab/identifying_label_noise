@@ -116,13 +116,12 @@ if __name__ == "__main__":
         #train and test on cleaned data
         if ONLY_CLEAN_TRAIN:
             classifier.fit(cleaned_data, cleaned_labels, epochs=15, verbose=0)
-            y_pred = classifier.predict(X_test)
         else:
             X_train, X_test, y_train, y_test = train_test_split(cleaned_data, cleaned_labels, test_size=0.2, shuffle=False)
             y_train = to_categorical(y_train)
             classifier.fit(X_train, y_train, epochs=15, verbose=0)
-            y_pred = classifier.predict(X_test)
 
+        y_pred = classifier.predict(X_test)
         y_pred = decode_from_one_hot(y_pred)
         cleaned_precision[iter_num] = precision_score(y_test, y_pred, average='macro')
         cleaned_accuracy[iter_num] = accuracy_score(y_test, y_pred, normalize=True)
