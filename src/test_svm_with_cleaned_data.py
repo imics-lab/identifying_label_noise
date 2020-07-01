@@ -97,7 +97,7 @@ if __name__ == "__main__":
     NUM_SAMPLES = len(raw_data)
     #extract features
     #data_features = get_features_for_set(raw_data, num_samples=NUM_SAMPLES)
-    #data_features = np.genfromtxt(feature_file, delimiter=',')
+    data_features = np.genfromtxt(feature_file, delimiter=',')
     #normalize(data_features, copy='False', axis=0)
 
     #pre-process and identify data
@@ -111,9 +111,10 @@ if __name__ == "__main__":
 
         #train and test on raw features
         all_indexes = np.arrange(len(raw_data))
-        X_train_raw, X_test_raw, y_train, y_test = train_test_split(all_indexes, labels, test_size=0.2, shuffle=True)
-        X_train = raw_data[X_train_raw]
-        X_test = raw_data[X_test_raw]
+        X_train_indexes, X_test_indexes, y_train, y_test = train_test_split(all_indexes, labels, test_size=0.2, shuffle=True)
+        X_train_raw = raw_data[X_train_indexes]
+        X_train = data_features[X_train_indexes]
+        X_test = data_features[X_test_indexes]
         normalize(X_train, copy='False', axis=0)
         normalize(X_test, copy='False', axis=0)
         cleaned_features = X_train
