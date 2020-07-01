@@ -19,8 +19,9 @@ def decode_from_one_hot(Y):
     retArray = np.zeros(len(Y))
     for i in range(len(Y)):
         retArray[i] = np.argmax(Y[i])
-
     return retArray
+
+ONLY_CLEAN_TRAIN = False
 
 
 if __name__ == "__main__":
@@ -38,6 +39,10 @@ if __name__ == "__main__":
     f = open("data_cleaning_experiments_results.txt", 'a')
 
     f.write("Running CNN test on data set "+NAME + str(DATASET_NUM)+"\n")
+    if ONLY_CLEAN_TRAIN:
+        f.write("Only cleaning training data\n")
+    else:
+        f.write("Cleaning train and test data\n")
 
     data_file = "src/datasets/"+NAME+str(DATASET_NUM)+"_data.csv"
     label_file = "src/datasets/"+NAME+str(DATASET_NUM)+"_labels.csv"
@@ -79,7 +84,11 @@ if __name__ == "__main__":
 
         #train and test on raw features
         X_train, X_test, y_train, y_test = train_test_split(raw_data, labels, test_size=0.2, shuffle=True)
-        res_ts = check_dataset(X_train, y_train)
+
+        if ONLY_CLEAN_TRAIN:
+            res_ts = check_dataset(X_train, y_train)
+        else:
+            res_ts = check_dataset(raw_data, labels)
 
         y_train = to_categorical(y_train)
         classifier.fit(X_train, y_train, epochs=15, verbose=0)
@@ -89,11 +98,15 @@ if __name__ == "__main__":
         raw_accuracy[iter_num] = accuracy_score(y_test, y_pred, normalize=True)
         raw_recall[iter_num] = recall_score(y_test, y_pred, average='macro')
 
-        cleaned_data = X_train
-        cleaned_labels = y_train
+        if ONLY_CLEAN_TRAIN:
+            cleaned_data = X_train
+            cleaned_labels = y_train
+        else:
+            cleaned_data = raw_data
+            cleaned_labels = labels
 
         print("Removing top 2% as ts data")
-        rem_percent = int(NUM_SAMPLES * 0.02)
+        rem_percent = int(len(cleaned_data) * 0.02)
         index_list = np.array(res_ts["indices"][:rem_percent])
         index_list = np.sort(index_list)
         f.write("Indexes to remove: " + str(index_list) +"\n")
@@ -101,10 +114,15 @@ if __name__ == "__main__":
         cleaned_labels = np.delete(cleaned_labels, index_list, 0)
 
         #train and test on cleaned data
-        #X_train, X_test, y_train, y_test = train_test_split(cleaned_data, cleaned_labels, test_size=0.2, shuffle=False)
-        #y_train = to_categorical(y_train)
-        classifier.fit(cleaned_data, cleaned_labels, epochs=15, verbose=0)
-        y_pred = classifier.predict(X_test)
+        if ONLY_CLEAN_TRAIN:
+            classifier.fit(cleaned_data, cleaned_labels, epochs=15, verbose=0)
+            y_pred = classifier.predict(X_test)
+        else:
+            X_train, X_test, y_train, y_test = train_test_split(cleaned_data, cleaned_labels, test_size=0.2, shuffle=False)
+            y_train = to_categorical(y_train)
+            classifier.fit(X_train, y_train, epochs=15, verbose=0)
+            y_pred = classifier.predict(X_test)
+
         y_pred = decode_from_one_hot(y_pred)
         cleaned_precision[iter_num] = precision_score(y_test, y_pred, average='macro')
         cleaned_accuracy[iter_num] = accuracy_score(y_test, y_pred, normalize=True)

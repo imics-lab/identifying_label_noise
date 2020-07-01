@@ -6,11 +6,6 @@
 #This script will generate 4 synthetic data sets and run 12 experiments to
 #measure the effectiveness of extended labelfix on timeseries data.
 
-touch data_cleaning_experiments_results.txt
-echo > data_cleaning_experiments_results.txt "************************"
-echo > data_cleaning_experiments_results.txt "huawei torso experiments"
-echo > data_cleaning_experiments_results.txt "************************"
-
 #python3 src/create_ts_data.py
 #python3 src/utils/convert_Huawei.py
 #python3 src/utils/convert_UniMib.py
