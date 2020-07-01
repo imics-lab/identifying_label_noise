@@ -97,8 +97,8 @@ if __name__ == "__main__":
     NUM_SAMPLES = len(raw_data)
     #extract features
     #data_features = get_features_for_set(raw_data, num_samples=NUM_SAMPLES)
-    data_features = np.genfromtxt(feature_file, delimiter=',')
-    normalize(data_features, copy='False', axis=0)
+    #data_features = np.genfromtxt(feature_file, delimiter=',')
+    #normalize(data_features, copy='False', axis=0)
 
     #pre-process and identify data
     raw_data, labels = preprocess_x_y_and_shuffle(raw_data, labels)
@@ -109,19 +109,20 @@ if __name__ == "__main__":
     for iter_num in range(NUM_OF_RUNS):
         f.write("--------------Run Number: " + str(iter_num+1) + "--------------------\n")
 
-        print("Classes represented in ts data: ", res_ts["Classes"])
-        print("Classes represented in numerical data: ", res_numercical["Classes"])
-
         #train and test on raw features
-        X_raw, X_test, y_train, y_test = train_test_split(raw_data, labels, test_size=0.2, shuffle=True)
-        X_train = get_features_for_set(X_raw, len(X_raw))
+        all_indexes = np.arrange(len(raw_data))
+        X_train_raw, X_test_raw, y_train, y_test = train_test_split(all_indexes, labels, test_size=0.2, shuffle=True)
+        X_train = raw_data[X_train_raw]
+        X_test = raw_data[X_test_raw]
+        normalize(X_train, copy='False', axis=0)
+        normalize(X_test, copy='False', axis=0)
         cleaned_features = X_train
         cleaned_labels = y_train
 
         #generate list of most poorly fit indexes
-        res_ts = check_dataset(X_raw, y_train)
+        res_ts = check_dataset(X_train_raw, y_train)
         res_numercical = check_dataset(X_train, y_train, hyperparams={
-            "input_dim": data_features.shape[1],
+            "input_dim": X_train.shape[1],
             "output_dim": max(labels)+1,
             "num_hidden": 3,
             "size_hidden": 50,
@@ -130,6 +131,8 @@ if __name__ == "__main__":
             "learn_rate": 1e-2,
             "activation": "relu"
         })
+        print("Classes represented in ts data: ", res_ts["Classes"])
+        print("Classes represented in numerical data: ", res_numercical["Classes"])
 
 
         classifier.fit(X_train, y_train)
@@ -139,7 +142,7 @@ if __name__ == "__main__":
         raw_recall[iter_num] = recall_score(y_test, y_pred, average='macro')
 
         #check for reasonability
-        print_statistics(data_features, labels)
+        print_statistics(X_train, y_train)
 
         #remove 2% worst fit samples using ts model
         print("Removing top 2% as ts data")
@@ -159,7 +162,7 @@ if __name__ == "__main__":
         cleaned_recall_as_ts[iter_num] = recall_score(y_test, y_pred, average='macro')
 
         #check for reasonability
-        print_statistics(data_features, labels)
+        print_statistics(cleaned_features, cleaned_labels)
 
         cleaned_features = X_train
         cleaned_labels = y_train
@@ -182,7 +185,7 @@ if __name__ == "__main__":
         cleaned_recall_as_numerical[iter_num] = recall_score(y_test, y_pred, average='macro')
 
         #check for reasonability
-        print_statistics(data_features, labels)
+        print_statistics(cleaned_features, cleaned_labels)
 
         #clean up loose ends in memory
         gc.collect()
