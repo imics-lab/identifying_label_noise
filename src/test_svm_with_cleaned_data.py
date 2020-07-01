@@ -23,7 +23,7 @@ from tsfresh.feature_extraction import EfficientFCParameters
 import matplotlib.pyplot as plt
 import sys
 
-ONLY_CLEAN_TRAIN = True
+ONLY_CLEAN_TRAIN = False
 
 def cast_array_to_dataframe(X):
     numSamples = len(X)
