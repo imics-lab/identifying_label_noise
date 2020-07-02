@@ -30,6 +30,7 @@ if __name__ == "__main__":
     plt.figure(1)
     plt.scatter(e[:,0], e[:,1], s=2, c=labels)
     plt.title("Features From Set " + str(DATASET_NUM))
+    plt.savefig('Synthetic_Set' + str(DATASET_NUM) + '_labels.pdf')
 
     y = np.zeros(len(labels), dtype='int')
     for i in bad_indexes:
@@ -39,4 +40,5 @@ if __name__ == "__main__":
     cmap = np.array(['g', 'r'])
     plt.scatter(e[:,0], e[:,1], s=6, c=cmap[y])
     plt.title("Mislabeled Points From Set " + str(DATASET_NUM))
+    plt.savefig('Synthetic_Set' + str(DATASET_NUM) + '_mislabels.pdf')
     plt.show()

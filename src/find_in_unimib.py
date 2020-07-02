@@ -2,12 +2,12 @@
 #Organization: Texas University
 #Data: 01 July, 2020
 #This file will identify the 10 most suspect indexes in the UniMib SHAR dataset
-#and will write a visualization of those points to file
+#and will write to file
 
 import numpy as np
 from labelfix import check_dataset, preprocess_x_y_and_shuffle, print_statistics
 
-NUM_OF_RUNS = 1
+NUM_OF_RUNS = 5
 
 if __name__ == "__main__":
     data_file = "src/datasets/unimib1_data.csv"
@@ -54,4 +54,4 @@ if __name__ == "__main__":
             all_bad = np.intersect1d(bad, all_bad)
 
     print("Bad indexes in all class data: ", all_bad[:10])
-    np.savetxt("unimib_fall_bad_indexes.csv", all_bad, delimiter=",", fmt="%d")
+    np.savetxt("unimib_all_class_bad_indexes.csv", all_bad, delimiter=",", fmt="%d")
