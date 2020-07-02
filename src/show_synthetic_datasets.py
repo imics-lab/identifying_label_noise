@@ -41,4 +41,5 @@ if __name__ == "__main__":
     plt.scatter(e[:,0], e[:,1], s=6, c=cmap[y])
     plt.title("Mislabeled Points From Set " + str(DATASET_NUM))
     plt.savefig('Synthetic_Set' + str(DATASET_NUM) + '_mislabels.pdf')
+
     plt.show()

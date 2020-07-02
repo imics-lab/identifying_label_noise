@@ -5,6 +5,8 @@
 #and will write to file
 
 import numpy as np
+from matplotlib import pyplot as plt
+from sklearn.manifold import TSNE as tsne
 from labelfix import check_dataset, preprocess_x_y_and_shuffle, print_statistics
 
 NUM_OF_RUNS = 5
@@ -12,6 +14,7 @@ NUM_OF_RUNS = 5
 if __name__ == "__main__":
     data_file = "src/datasets/unimib1_data.csv"
     label_file = "src/datasets/unimib1_labels.csv"
+    feature_file = "src/datasets/unimib1_features.csv"
 
     raw_data = np.genfromtxt(data_file, delimiter=',')
     labels = np.genfromtxt(label_file, delimiter=',', dtype='int')
@@ -30,8 +33,17 @@ if __name__ == "__main__":
         else:
             all_bad = np.intersect1d(bad, all_bad)
 
-    print("Bad indexes in fall data: ", all_bad[:10])
+    all_bad = all_bad[:10]
+    print("Bad indexes in fall data: ", all_bad)
     np.savetxt("unimib_fall_bad_indexes.csv", all_bad, delimiter=",", fmt="%d")
+
+    e = tsne(n_components=2, n_jobs=8).fit_transform(np.genfromtxt(feature_file, delimiter=','))
+
+    plt.figure(1)
+    plt.scatter(e[:,0], e[:,1], s=2, c=labels)
+    plt.scatter(e[all_bad,0], e[all_bad,1], marker='+', s=20, c='red')
+    plt.title("Mislabeled Instances in UniMib Fall")
+    plt.savefig('UniMib_fall_bad_instances.pdf')
 
     data_file = "src/datasets/unimib2_data.csv"
     label_file = "src/datasets/unimib2_labels.csv"
@@ -53,5 +65,14 @@ if __name__ == "__main__":
         else:
             all_bad = np.intersect1d(bad, all_bad)
 
-    print("Bad indexes in all class data: ", all_bad[:10])
+    all_bad = all_bad[:10]
+    print("Bad indexes in all class data: ", all_bad)
     np.savetxt("unimib_all_class_bad_indexes.csv", all_bad, delimiter=",", fmt="%d")
+
+    plt.figure(2)
+    plt.scatter(e[:,0], e[:,1], s=2, c=labels)
+    plt.scatter(e[all_bad,0], e[all_bad,1], marker='+', s=20, c='red')
+    plt.title("Mislabeled Instances in UniMib All Class")
+    plt.savefig('UniMib_fall_all_class_instances.pdf')
+
+    plt.show()
