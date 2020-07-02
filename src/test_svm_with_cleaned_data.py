@@ -221,6 +221,7 @@ if __name__ == "__main__":
 
         #clean up loose ends in memory
         gc.collect()
+        f.flush()
 
     f.write("\n\n--------Results----------------\n")
     for i in range(NUM_OF_RUNS):

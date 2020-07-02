@@ -111,6 +111,7 @@ if __name__ == "__main__":
         num_recall[i, 2] = recall_score(y_true, y_pred_num, average='macro')
 
         gc.collect()
+        f.flush()
 
     f.write("### Results on Raw Data###\n")
     f.write("\t\tPrec\t\t\tRecall\n")

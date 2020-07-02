@@ -128,6 +128,7 @@ if __name__ == "__main__":
         cleaned_recall[iter_num] = recall_score(y_test, y_pred, average='macro')
 
         gc.collect()
+        f.flush()
 
     f.write("\n\n--------Results----------------\n")
     for i in range(NUM_OF_RUNS):
