@@ -34,7 +34,7 @@ if __name__ == "__main__":
             all_bad = np.intersect1d(bad, all_bad)
 
     all_bad = all_bad[:10]
-    print("Bad indexes in fall data: ", all_bad)
+    print("Bad indexes in HuaWei hand data: ", all_bad)
     np.savetxt("huawei_hand_bad_indexes.csv", all_bad, delimiter=",", fmt="%d")
 
     e = tsne(n_components=2, n_jobs=8).fit_transform(np.genfromtxt(feature_file, delimiter=','))
@@ -42,10 +42,10 @@ if __name__ == "__main__":
     plt.figure(1)
     plt.scatter(e[:,0], e[:,1], s=2, c=labels)
     plt.scatter(e[all_bad,0], e[all_bad,1], marker='+', s=20, c='red')
-    plt.title("Mislabeled Instances in UniMib Fall")
-    plt.savefig('UniMib_fall_bad_instances.pdf')
+    plt.title("Mislabeled Instances in Sussex-HuaWei Hand")
+    plt.savefig('huawei_hand_bad_instances.pdf')
 
-    data_file = "src/datasets/huawei2.csv"
+    data_file = "src/datasets/huawei2_data.csv"
     label_file = "src/datasets/huawei2_labels.csv"
     feature_file = "src/datasets/huawei2_features.csv"
 
@@ -67,7 +67,7 @@ if __name__ == "__main__":
             all_bad = np.intersect1d(bad, all_bad)
 
     all_bad = all_bad[:10]
-    print("Bad indexes in all class data: ", all_bad)
+    print("Bad indexes in huawei torso data: ", all_bad)
     np.savetxt("huawei_torso_bad_indexes.csv", all_bad, delimiter=",", fmt="%d")
 
     e = tsne(n_components=2, n_jobs=8).fit_transform(np.genfromtxt(feature_file, delimiter=','))
@@ -75,7 +75,7 @@ if __name__ == "__main__":
     plt.figure(2)
     plt.scatter(e[:,0], e[:,1], s=2, c=labels)
     plt.scatter(e[all_bad,0], e[all_bad,1], marker='+', s=20, c='red')
-    plt.title("Mislabeled Instances in UniMib All Class")
-    plt.savefig('UniMib_fall_all_class_instances.pdf')
+    plt.title("Mislabeled Instances in Sussex-HuaWei Torso")
+    plt.savefig('huaWei_torso_bad_instances.pdf')
 
     plt.show()
