@@ -76,14 +76,16 @@ if __name__ == "__main__":
         Dense(NUM_CLASSES, activation="softmax")
     ])
 
-    classifier.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-    classifier.summary()
+
 
     for iter_num in range(NUM_OF_RUNS):
         f.write("--------------Run Number: "+ str(iter_num+1)+ "--------------------\n")
 
         #train and test on raw features
         X_train, X_test, y_train, y_test = train_test_split(raw_data, labels, test_size=0.2, shuffle=True)
+
+        classifier.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+        classifier.summary()
 
         if ONLY_CLEAN_TRAIN:
             res_ts = check_dataset(X_train, y_train)
@@ -114,10 +116,12 @@ if __name__ == "__main__":
         cleaned_labels = np.delete(cleaned_labels, index_list, 0)
 
         #train and test on cleaned data
+        classifier.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+        classifier.summary()
         if ONLY_CLEAN_TRAIN:
             classifier.fit(cleaned_data, cleaned_labels, epochs=15, verbose=0)
         else:
-            X_train, X_test, y_train, y_test = train_test_split(cleaned_data, cleaned_labels, test_size=0.2, shuffle=False)
+            X_train, X_test, y_train, y_test = train_test_split(cleaned_data, cleaned_labels, test_size=0.2, shuffle=True)
             y_train = to_categorical(y_train)
             classifier.fit(X_train, y_train, epochs=15, verbose=0)
 
