@@ -18,6 +18,8 @@ if __name__ == "__main__":
     label_file = "src/datasets/synthetic_set"+str(DATASET_NUM)+"_labels.csv"
     index_file = "src/datasets/synthetic_set"+str(DATASET_NUM)+"_indexes.csv"
 
+    names = ["0", "1", "2", "3", "4"]
+
 
     X = np.genfromtxt(data_file, delimiter=',')
     labels = np.genfromtxt(label_file, delimiter=',', dtype='int')
@@ -28,18 +30,13 @@ if __name__ == "__main__":
     e = tsne(n_components=2, n_jobs=8).fit_transform(X)
 
     plt.figure(1)
-    plt.scatter(e[:,0], e[:,1], s=2, c=labels)
-    plt.title("Features From Set " + str(DATASET_NUM))
-    plt.savefig('Synthetic_Set' + str(DATASET_NUM) + '_labels.pdf')
+    plt.scatter(e[labels==0,0], e[labels==0,1], s=2, c='green', label="first")
+    plt.scatter(e[labels==1,0], e[labels==1,1], s=2, c='blue', label="second")
+    plt.scatter(e[bad_indexes, 0], e[bad_indexes,1], marker='+', s=60, c='red')
+    plt.title("t-SNE Visualization of Synthetic Set " + str(DATASET_NUM))
+    plt.axis('off')
+    plt.legend()
+    plt.savefig('Synthetic_Set' + str(DATASET_NUM) + '.pdf')
 
-    y = np.zeros(len(labels), dtype='int')
-    for i in bad_indexes:
-        y[i] = 1
-
-    plt.figure(2)
-    cmap = np.array(['g', 'r'])
-    plt.scatter(e[:,0], e[:,1], s=6, c=cmap[y])
-    plt.title("Mislabeled Points From Set " + str(DATASET_NUM))
-    plt.savefig('Synthetic_Set' + str(DATASET_NUM) + '_mislabels.pdf')
 
     plt.show()
