@@ -23,6 +23,14 @@ if __name__ == "__main__":
         '#a1a1a1',
         '#c1c1c1'
     ]
+    colors = ['blue',
+        'green',
+        'cyan',
+        'gray',
+        'olive',
+        'limegreen',
+        'gold',
+        'darkgreen']
 
     names = ["0", "1", "2", "3", "4"]
 
@@ -38,7 +46,7 @@ if __name__ == "__main__":
     plt.figure(1)
     for i in range(max(labels)+1):
         x = np.where(labels==i)
-        plt.scatter(e[x, 0], e[x, 1], c=grays[i], s=4, label=names[i])
+        plt.scatter(e[x, 0], e[x, 1], c=colors[i], s=4, label=names[i])
     plt.scatter(e[bad_indexes, 0], e[bad_indexes,1], marker='x', s=75, c='red')
     plt.title("Synthetic Set " + str(DATASET_NUM) + " t-SNE Visualization")
     plt.axis('off')

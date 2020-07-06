@@ -13,14 +13,14 @@ from scipy.io import loadmat
 NUM_OF_RUNS = 5
 
 if __name__ == "__main__":
-    # data_file = "src/datasets/unimib1_data.csv"
-    # label_file = "src/datasets/unimib1_labels.csv"
-    # feature_file = "src/datasets/unimib1_features.csv"
-    #
-    #
-    # raw_data = np.genfromtxt(data_file, delimiter=',')
-    # labels = np.genfromtxt(label_file, delimiter=',', dtype='int')
-    # names = ['No Fall', 'Fall']
+    data_file = "src/datasets/unimib1_data.csv"
+    label_file = "src/datasets/unimib1_labels.csv"
+    feature_file = "src/datasets/unimib1_features.csv"
+
+
+    #raw_data = np.genfromtxt(data_file, delimiter=',')
+    labels = np.genfromtxt(label_file, delimiter=',', dtype='int')
+    names = ['No Fall', 'Fall']
     # preprocess_x_y_and_shuffle(raw_data, labels)
     #
     # first_run = True
@@ -37,23 +37,23 @@ if __name__ == "__main__":
     # #         all_bad = np.intersect1d(bad, all_bad)
     # #     print(all_bad[:10])
     #
-    # all_bad = np.genfromtxt("unimib_fall_bad_indexes.csv", delimiter=',', dtype='int')
+    all_bad = np.genfromtxt("unimib_fall_bad_indexes.csv", delimiter=',', dtype='int')
     # all_bad = all_bad[:10]
-    # print("Bad indexes in fall data: ", all_bad)
-    # np.savetxt("unimib_fall_bad_indexes.csv", all_bad, delimiter=",", fmt="%d")
-    #
-    # #e = tsne(n_components=2, n_jobs=8).fit_transform(np.genfromtxt(feature_file, delimiter=','))
-    # e = np.genfromtxt("src/datasets/unimib1_tsne.csv", delimiter=',')
-    #
-    # plt.figure(1)
-    # plt.scatter(e[labels==0,0], e[labels==0,1], s=2, c='blue', label="No Fall")
-    # plt.scatter(e[labels==1,0], e[labels==1,1], s=2, c='green', label="Fall")
-    # plt.scatter(e[all_bad,0], e[all_bad,1], marker='+', s=75, c='red', label="Mislabeled")
-    # plt.title("UniMib Fall t-SNE visualization")
-    # plt.axis('off')
-    # plt.legend()
-    # plt.savefig('UniMib_fall_bad_instances.pdf')
-    #np.savetxt("src/datasets/unimib1_tsne.csv", e, delimiter=",", fmt="%d")
+    print("Bad indexes in fall data: ", all_bad)
+    np.savetxt("unimib_fall_bad_indexes.csv", all_bad, delimiter=",", fmt="%d")
+
+    #e = tsne(n_components=2, n_jobs=8).fit_transform(np.genfromtxt(feature_file, delimiter=','))
+    e = np.genfromtxt("src/datasets/unimib1_tsne.csv", delimiter=',')
+    #np.savetxt("src/datasets/unimib1_tsne_color.csv", e, delimiter=",")
+
+    plt.figure(1)
+    plt.scatter(e[labels==0,0], e[labels==0,1], s=2, c='blue', label="No Fall")
+    plt.scatter(e[labels==1,0], e[labels==1,1], s=2, c='green', label="Fall")
+    plt.scatter(e[all_bad,0], e[all_bad,1], marker='+', s=75, c='red', label="Mislabeled")
+    plt.title("UniMib Fall t-SNE visualization")
+    plt.axis('off')
+    plt.legend()
+    plt.savefig('UniMib_fall_bad_instances.pdf')
 
     data_file = "src/datasets/unimib2_data.csv"
     label_file = "src/datasets/unimib2_labels.csv"
@@ -137,8 +137,8 @@ if __name__ == "__main__":
     np.savetxt("unimib_all_class_bad_indexes.csv", all_bad, delimiter=",", fmt="%d")
 
     #e = tsne(n_components=2, n_jobs=8).fit_transform(np.genfromtxt(feature_file, delimiter=','))
-    e = np.genfromtxt("src/datasets/unimib2_tsne.csv", delimiter=',')
-    #np.savetxt("src/datasets/unimib2_tsne.csv", e, delimiter=",", fmt="%d")
+    e = np.genfromtxt("src/datasets/unimib2_tsne_color.csv", delimiter=',')
+    #np.savetxt("src/datasets/unimib2_tsne.csv", e, delimiter=",")
 
     plt.figure(2)
     print(e[:,0])
@@ -148,7 +148,7 @@ if __name__ == "__main__":
     #plt.scatter(e[:,0], e[:,1], s=2, c=labels)
     for i in range(17):
         x = np.where(labels==i)
-        plt.scatter(e[x, 0], e[x, 1], c=grays[i], s=4, label=names[i])
+        plt.scatter(e[x, 0], e[x, 1], c=colors[i], s=4, label=names[i])
     plt.scatter(e[all_bad,0], e[all_bad,1], marker='x', s=200, c='red', label="Mislabeled")
     plt.title("UniMib All Class t-SNE visualization")
     plt.axis('off')
