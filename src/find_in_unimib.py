@@ -148,7 +148,7 @@ if __name__ == "__main__":
     #plt.scatter(e[:,0], e[:,1], s=2, c=labels)
     for i in range(17):
         x = np.where(labels==i)
-        plt.scatter(e[x, 0], e[x, 1], c=colors[i], s=4, label=names[i])
+        plt.scatter(e[x, 0], e[x, 1], c=grays[i], s=4, label=names[i])
     plt.scatter(e[all_bad,0], e[all_bad,1], marker='x', s=200, c='red', label="Mislabeled")
     plt.title("UniMib All Class t-SNE visualization")
     plt.axis('off')

@@ -23,7 +23,7 @@ if __name__ == "__main__":
         '#717171',
         '#818181',
         '#919191',
-        '#a1a1a1',,
+        '#a1a1a1',
         '#c1c1c1'
     ]
 
@@ -60,7 +60,7 @@ if __name__ == "__main__":
     np.savetxt("huawei_hand_bad_indexes.csv", all_bad, delimiter=",", fmt="%d")
 
     e = tsne(n_components=2, n_jobs=8).fit_transform(np.genfromtxt(feature_file, delimiter=','))
-    np.savetxt("src/datasets/huawei1_tsne.csv", e, delimiter=",", fmt="%d")
+    np.savetxt("src/datasets/huawei1_tsne.csv", e, delimiter=",")
 
     plt.figure(1)
     for i in range(8):
@@ -99,7 +99,7 @@ if __name__ == "__main__":
     np.savetxt("huawei_torso_bad_indexes.csv", all_bad, delimiter=",", fmt="%d")
 
     e = tsne(n_components=2, n_jobs=8).fit_transform(np.genfromtxt(feature_file, delimiter=','))
-    np.savetxt("src/datasets/huawei2_tsne.csv", e, delimiter=",", fmt="%d")
+    np.savetxt("src/datasets/huawei2_tsne.csv", e, delimiter=",")
 
     plt.figure(2)
     for i in range(8):
