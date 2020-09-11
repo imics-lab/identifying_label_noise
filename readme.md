@@ -1,3 +1,16 @@
+# Identifying Mislabeled Instances in Time Series Data
+
+Author: Gentry Atkinson
+Organization: Texas State University
+
+This work has been adapted from the original work by extending Labelfix to function on time series data. 
+
+## Changes
+A 1d convolutional NN has been added to the original models set which are applied during label noise identification. Several utility files have been added to make working with time series data more reasonable. One of these files will generate synthetic datasets of arbitrary size. Another provides feature extraction on time series datasets using the TSFresh library. Two files have been added to re-write the UniMiB and Sussex-Huawei HAR datasets into a more usable format for the performance of some experiments to show the efficacy of the new model. Finally a bash script has been included to automatically run 3 experiments on 6 time series datasets.
+
+## Repeating Time Series Experiments
+The UniMiB and Sussex-Huawei datasets will have to be downloaded by the user and pasted into the datasets directory. After having done this invoking the run_all_experiments script will run the 3 experiment on 4 synthetic datasets, UniMiB fall, UniMiB all activity, Sussex-Huawei hand, and Sussex Huawei torso datasets.
+
 # LabelFix - Identifying Mislabeled Instances in Classification Data Sets
 
 Welcome to the LabelFix project.
